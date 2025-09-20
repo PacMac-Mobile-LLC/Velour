@@ -226,7 +226,7 @@ const VideoRoom = () => {
   // Initialize socket connection
   useEffect(() => {
     const socketUrl = process.env.NODE_ENV === 'production' 
-      ? window.location.origin 
+      ? 'https://cmameet.onrender.com' 
       : 'http://localhost:5001';
     console.log('Connecting to socket:', socketUrl);
     const newSocket = io(socketUrl);
