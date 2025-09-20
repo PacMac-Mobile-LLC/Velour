@@ -21,6 +21,20 @@ else
   echo "❌ Build directory not found"
 fi
 
+# Copy server files to root directory for Render
+echo "📋 Copying server files to root directory..."
+if [ -d "server" ]; then
+  cp -r server/* ./
+  echo "✅ Server files copied to root directory"
+else
+  echo "❌ Server directory not found"
+fi
+
+# Install server dependencies in root directory
+echo "📦 Installing server dependencies in root directory..."
+npm install express socket.io cors uuid
+echo "✅ Server dependencies installed in root directory"
+
 echo "✅ Build completed successfully!"
 echo "📁 Build directory contents:"
 ls -la client/build/ || echo "Build directory not found"

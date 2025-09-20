@@ -3,7 +3,7 @@ services:
     name: zoom-clone
     env: node
     buildCommand: ./build.sh
-    startCommand: npm start
+    startCommand: node index.js
     envVars:
       - key: NODE_ENV
         value: production
