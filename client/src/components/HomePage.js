@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign } from 'lucide-react';
+import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone } from 'lucide-react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -120,6 +120,61 @@ const DonationButton = styled.a`
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
     border-color: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+const Footer = styled.div`
+  margin-top: 40px;
+  text-align: center;
+  color: white;
+  opacity: 0.9;
+`;
+
+const HelplineSection = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+const HelplineText = styled.p`
+  font-size: 1rem;
+  color: white;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+`;
+
+const PhoneNumbers = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  
+  @media (min-width: 480px) {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
+`;
+
+const PhoneLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
   }
 `;
 
@@ -287,7 +342,7 @@ const HomePage = () => {
       setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     }, 5000);
     return () => clearInterval(interval);
-  }, [quotes]);
+  }, []);
 
   const handleCreateRoom = async (e) => {
     e.preventDefault();
@@ -421,6 +476,22 @@ const HomePage = () => {
           </ButtonGroup>
         </Form>
       </Card>
+
+      <Footer>
+        <HelplineSection>
+          <HelplineText>Call the CMA Helpline at:</HelplineText>
+          <PhoneNumbers>
+            <PhoneLink href="tel:+18556384373">
+              <Phone size={16} />
+              (855) METH-FREE
+            </PhoneLink>
+            <PhoneLink href="tel:+18556384373">
+              <Phone size={16} />
+              (855) 638-4373
+            </PhoneLink>
+          </PhoneNumbers>
+        </HelplineSection>
+      </Footer>
     </Container>
   );
 };
