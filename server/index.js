@@ -20,6 +20,17 @@ const io = socketIo(server, {
 
 const PORT = process.env.PORT || 5001;
 
+// Global error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // Don't exit the process, just log the error
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit the process, just log the error
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -113,6 +124,11 @@ io.on('connection', (socket) => {
   console.log('New socket connection:', socket.id);
   console.log('Socket transport:', socket.conn.transport.name);
   console.log('Socket ready state:', socket.conn.readyState);
+  
+  // Add error handling for individual socket errors
+  socket.on('error', (error) => {
+    console.error('Socket error for', socket.id, ':', error);
+  });
 
   socket.on('join-room', (roomId, userId) => {
     console.log(`Socket ${socket.id} joining room ${roomId} as user ${userId}`);

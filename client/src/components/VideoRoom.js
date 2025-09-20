@@ -453,6 +453,8 @@ const VideoRoom = () => {
   const [linkCopied, setLinkCopied] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [tempUserName, setTempUserName] = useState('');
+  const [connectionRetries, setConnectionRetries] = useState(0);
+  const [maxRetries] = useState(5);
   const [activeSpeaker, setActiveSpeaker] = useState(null);
 
   const localVideoRef = useRef(null);
@@ -576,6 +578,8 @@ const VideoRoom = () => {
     newSocket.on('connect', () => {
       console.log('Socket connected with ID:', newSocket.id);
       console.log('Socket transport:', newSocket.io.engine.transport.name);
+      // Reset retry counter on successful connection
+      setConnectionRetries(0);
     });
     
     newSocket.on('disconnect', (reason) => {
@@ -585,6 +589,13 @@ const VideoRoom = () => {
     newSocket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
       console.error('Error details:', error.message, error.description, error.context);
+      
+      // Check if it's a 502 error (server down)
+      if (error.message && (error.message.includes('502') || error.message.includes('xhr poll error'))) {
+        console.log('Server appears to be down (502 error), attempting retry...');
+        retryConnection();
+        return;
+      }
       
       // If WebSocket fails, try polling only
       if (error.message && error.message.includes('websocket')) {
@@ -608,7 +619,7 @@ const VideoRoom = () => {
     return () => {
       newSocket.close();
     };
-  }, []);
+  }, [retryConnection]);
 
   // Create peer connection
   const createPeerConnection = useCallback((userId) => {
@@ -970,6 +981,26 @@ const VideoRoom = () => {
       handleNameSubmit();
     }
   };
+
+  // Connection retry with exponential backoff
+  const retryConnection = useCallback(() => {
+    if (connectionRetries < maxRetries) {
+      const delay = Math.pow(2, connectionRetries) * 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+      console.log(`Retrying connection in ${delay}ms (attempt ${connectionRetries + 1}/${maxRetries})`);
+      
+      setTimeout(() => {
+        setConnectionRetries(prev => prev + 1);
+        // Force a new socket connection
+        if (socket) {
+          socket.disconnect();
+        }
+        // The useEffect will trigger a new connection
+      }, delay);
+    } else {
+      console.error('Max connection retries reached. Please refresh the page.');
+      alert('Unable to connect to the server. Please refresh the page and try again.');
+    }
+  }, [connectionRetries, maxRetries, socket]);
 
   // Toggle audio
   const toggleAudio = () => {
