@@ -544,8 +544,13 @@ const VideoRoom = () => {
     // Handle remote stream
     peerConnection.ontrack = (event) => {
       console.log('Received remote stream from:', userId);
+      console.log('Remote stream tracks:', event.streams[0]?.getTracks());
       const [remoteStream] = event.streams;
-      setRemoteStreams(prev => new Map(prev).set(userId, remoteStream));
+      setRemoteStreams(prev => {
+        const newMap = new Map(prev).set(userId, remoteStream);
+        console.log('Updated remote streams map:', Array.from(newMap.keys()));
+        return newMap;
+      });
       // Create audio analyzer for remote stream (with error handling)
       try {
         createAudioAnalyzer(remoteStream, userId);
@@ -572,7 +577,7 @@ const VideoRoom = () => {
     };
 
     peerConnections.current.set(userId, peerConnection);
-  }, [localStream, socket, roomId]);
+  }, [localStream, socket, roomId, createAudioAnalyzer]);
 
   // Handle offer received
   const handleOfferReceived = useCallback(async (data) => {
@@ -1070,21 +1075,25 @@ const VideoRoom = () => {
           </VideoContainer>
 
           {/* Remote videos */}
-          {Array.from(remoteStreams.entries()).map(([userId, stream]) => (
-            <VideoContainer key={userId} isActiveSpeaker={activeSpeaker === userId}>
-              <StyledVideo
-                ref={ref => {
-                  if (ref) {
-                    ref.srcObject = stream;
-                    remoteVideoRefs.current.set(userId, ref);
-                  }
-                }}
-                autoPlay
-                playsInline
+          {Array.from(remoteStreams.entries()).map(([userId, stream]) => {
+            console.log('Rendering remote video for user:', userId, 'stream:', stream);
+            return (
+              <VideoContainer key={userId} isActiveSpeaker={activeSpeaker === userId}>
+                <StyledVideo
+                  ref={ref => {
+                    if (ref) {
+                      ref.srcObject = stream;
+                      remoteVideoRefs.current.set(userId, ref);
+                      console.log('Set remote video srcObject for user:', userId);
+                    }
+                  }}
+                  autoPlay
+                  playsInline
               />
               <VideoLabel>{userId}</VideoLabel>
             </VideoContainer>
-          ))}
+            );
+          })}
         </VideoGrid>
 
         {showChat && (
