@@ -472,6 +472,26 @@ const VideoRoom = () => {
     }
   }, [searchParams]);
 
+  // Connection retry with exponential backoff
+  const retryConnection = useCallback(() => {
+    if (connectionRetries < maxRetries) {
+      const delay = Math.pow(2, connectionRetries) * 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+      console.log(`Retrying connection in ${delay}ms (attempt ${connectionRetries + 1}/${maxRetries})`);
+      
+      setTimeout(() => {
+        setConnectionRetries(prev => prev + 1);
+        // Force a new socket connection
+        if (socket) {
+          socket.disconnect();
+        }
+        // The useEffect will trigger a new connection
+      }, delay);
+    } else {
+      console.error('Max connection retries reached. Please refresh the page.');
+      alert('Unable to connect to the server. Please refresh the page and try again.');
+    }
+  }, [connectionRetries, maxRetries, socket]);
+
   // Audio level analysis for active speaker detection
   const createAudioAnalyzer = useCallback((stream, userId) => {
     try {
@@ -981,26 +1001,6 @@ const VideoRoom = () => {
       handleNameSubmit();
     }
   };
-
-  // Connection retry with exponential backoff
-  const retryConnection = useCallback(() => {
-    if (connectionRetries < maxRetries) {
-      const delay = Math.pow(2, connectionRetries) * 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
-      console.log(`Retrying connection in ${delay}ms (attempt ${connectionRetries + 1}/${maxRetries})`);
-      
-      setTimeout(() => {
-        setConnectionRetries(prev => prev + 1);
-        // Force a new socket connection
-        if (socket) {
-          socket.disconnect();
-        }
-        // The useEffect will trigger a new connection
-      }, delay);
-    } else {
-      console.error('Max connection retries reached. Please refresh the page.');
-      alert('Unable to connect to the server. Please refresh the page and try again.');
-    }
-  }, [connectionRetries, maxRetries, socket]);
 
   // Toggle audio
   const toggleAudio = () => {
