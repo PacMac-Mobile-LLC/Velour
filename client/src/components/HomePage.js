@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar } from 'lucide-react';
+import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign } from 'lucide-react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -82,6 +82,45 @@ const QuoteAuthor = styled.cite`
   margin-top: 10px;
   font-size: 0.9rem;
   opacity: 0.8;
+`;
+
+const DonationSection = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  text-align: center;
+`;
+
+const DonationText = styled.p`
+  font-size: 0.95rem;
+  color: white;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+  opacity: 0.9;
+`;
+
+const DonationButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
 `;
 
 const Card = styled.div`
@@ -210,35 +249,35 @@ const JoinButton = styled(Button)`
   }
 `;
 
+// Inspirational quotes for recovery
+const quotes = [
+  {
+    text: "We are not bad people trying to get good, we are sick people trying to get well.",
+    author: "CMA Literature"
+  },
+  {
+    text: "One day at a time, one moment at a time, we can stay clean and sober.",
+    author: "CMA Tradition"
+  },
+  {
+    text: "The only requirement for membership is a desire to stop using.",
+    author: "CMA Third Tradition"
+  },
+  {
+    text: "We can't do it alone, but together we can do what we could never do alone.",
+    author: "CMA Fellowship"
+  },
+  {
+    text: "Recovery is not about perfection, it's about progress.",
+    author: "CMA Wisdom"
+  }
+];
+
 const HomePage = () => {
   const [name, setName] = useState('');
   const [roomId, setRoomId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Inspirational quotes for recovery
-  const quotes = [
-    {
-      text: "We are not bad people trying to get good, we are sick people trying to get well.",
-      author: "CMA Literature"
-    },
-    {
-      text: "One day at a time, one moment at a time, we can stay clean and sober.",
-      author: "CMA Tradition"
-    },
-    {
-      text: "The only requirement for membership is a desire to stop using.",
-      author: "CMA Third Tradition"
-    },
-    {
-      text: "We can't do it alone, but together we can do what we could never do alone.",
-      author: "CMA Fellowship"
-    },
-    {
-      text: "Recovery is not about perfection, it's about progress.",
-      author: "CMA Wisdom"
-    }
-  ];
 
   const [currentQuote, setCurrentQuote] = useState(quotes[0]);
 
@@ -322,6 +361,21 @@ const HomePage = () => {
           <Quote>"{currentQuote.text}"</Quote>
           <QuoteAuthor>— {currentQuote.author}</QuoteAuthor>
         </QuoteSection>
+
+        <DonationSection>
+          <DonationText>
+            "Every CMA group ought to be fully self-supporting, declining outside contributions." 
+            However, we are fully self-supporting and do accept donations to help maintain this virtual meeting platform.
+          </DonationText>
+          <DonationButton 
+            href="https://www.venmo.com/u/PackieMobile" 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <DollarSign size={16} />
+            Support CMA Virtual Meetings
+          </DonationButton>
+        </DonationSection>
       </PageHeader>
 
       <Card>
