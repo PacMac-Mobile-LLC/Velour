@@ -75,9 +75,10 @@ app.get('/api/rooms/:roomId', (req, res) => {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log('New socket connection:', socket.id);
 
   socket.on('join-room', (roomId, userId) => {
+    console.log(`Socket ${socket.id} joining room ${roomId} as user ${userId}`);
     socket.join(roomId);
     
     // Check if this is the first user in the room (initiator)
@@ -85,6 +86,7 @@ io.on('connection', (socket) => {
     
     // Add user to room
     if (!rooms.has(roomId)) {
+      console.log(`Creating new room: ${roomId}`);
       rooms.set(roomId, {
         id: roomId,
         participants: new Set(),
@@ -95,6 +97,13 @@ io.on('connection', (socket) => {
     // Get existing participants before adding the new user
     const existingParticipants = Array.from(rooms.get(roomId).participants);
     rooms.get(roomId).participants.add(userId);
+    
+    console.log(`Room ${roomId} state:`, {
+      existingParticipants,
+      newUser: userId,
+      totalParticipants: rooms.get(roomId).participants.size,
+      isInitiator
+    });
     
     // Notify the joining user if they are the initiator and send existing participants
     socket.emit('room-joined', { 
@@ -109,6 +118,7 @@ io.on('connection', (socket) => {
     
     // Notify other users in the room about the new user
     socket.to(roomId).emit('user-connected', userId);
+    console.log(`Notified other users in room ${roomId} about new user ${userId}`);
   });
 
   socket.on('disconnect', () => {

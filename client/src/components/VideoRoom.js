@@ -228,7 +228,21 @@ const VideoRoom = () => {
     const socketUrl = process.env.NODE_ENV === 'production' 
       ? window.location.origin 
       : 'http://localhost:5001';
+    console.log('Connecting to socket:', socketUrl);
     const newSocket = io(socketUrl);
+    
+    newSocket.on('connect', () => {
+      console.log('Socket connected with ID:', newSocket.id);
+    });
+    
+    newSocket.on('disconnect', () => {
+      console.log('Socket disconnected');
+    });
+    
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
+    
     setSocket(newSocket);
 
     return () => {
@@ -467,6 +481,7 @@ const VideoRoom = () => {
   // Join room when socket is ready
   useEffect(() => {
     if (socket && roomId) {
+      console.log('Joining room:', roomId, 'with user:', userName);
       socket.emit('join-room', roomId, userName);
     }
   }, [socket, roomId, userName]);
