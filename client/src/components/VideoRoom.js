@@ -66,6 +66,9 @@ const VideoContainer = styled.div`
   overflow: hidden;
   aspect-ratio: 16/9;
   min-height: 200px;
+  border: ${props => props.isActiveSpeaker ? '3px solid #667eea' : '3px solid transparent'};
+  transition: border-color 0.3s ease;
+  box-shadow: ${props => props.isActiveSpeaker ? '0 0 20px rgba(102, 126, 234, 0.5)' : 'none'};
 `;
 
 const StyledVideo = styled.video`
@@ -367,10 +370,13 @@ const VideoRoom = () => {
   const [isInitiator, setIsInitiator] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [activeSpeaker, setActiveSpeaker] = useState(null);
 
   const localVideoRef = useRef(null);
   const remoteVideoRefs = useRef(new Map());
   const peerConnections = useRef(new Map());
+  const audioAnalyzers = useRef(new Map());
+  const animationFrameRef = useRef(null);
   const userName = searchParams.get('name') || 'Anonymous';
 
   // Initialize socket connection
@@ -425,6 +431,8 @@ const VideoRoom = () => {
       console.log('Received remote stream from:', userId);
       const [remoteStream] = event.streams;
       setRemoteStreams(prev => new Map(prev).set(userId, remoteStream));
+      // Create audio analyzer for remote stream
+      createAudioAnalyzer(remoteStream, userId);
     };
 
     // Handle ICE candidates
@@ -445,7 +453,7 @@ const VideoRoom = () => {
     };
 
     peerConnections.current.set(userId, peerConnection);
-  }, [localStream, socket, roomId]);
+  }, [localStream, socket, roomId, createAudioAnalyzer]);
 
   // Handle offer received
   const handleOfferReceived = useCallback(async (data) => {
@@ -544,6 +552,8 @@ const VideoRoom = () => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
+        // Create audio analyzer for local stream
+        createAudioAnalyzer(stream, userName);
       } catch (error) {
         console.error('Error accessing media devices:', error);
         alert('Unable to access camera and microphone. Please check permissions.');
@@ -551,7 +561,7 @@ const VideoRoom = () => {
     };
 
     initLocalStream();
-  }, []);
+  }, [createAudioAnalyzer, userName]);
 
   // Socket event handlers
   useEffect(() => {
@@ -590,6 +600,12 @@ const VideoRoom = () => {
         newStreams.delete(userId);
         return newStreams;
       });
+      // Clean up audio analyzer
+      if (audioAnalyzers.current.has(userId)) {
+        const { audioContext } = audioAnalyzers.current.get(userId);
+        audioContext.close();
+        audioAnalyzers.current.delete(userId);
+      }
     };
 
     const handleOffer = async (data) => {
@@ -609,6 +625,10 @@ const VideoRoom = () => {
 
     const handleMessage = (data) => {
       setMessages(prev => [...prev, data]);
+      // Show notification if chat is not visible or message is from someone else
+      if (!showChat || data.sender !== userName) {
+        showNotification(data);
+      }
     };
 
     socket.on('user-connected', handleUserConnected);
@@ -626,7 +646,7 @@ const VideoRoom = () => {
       socket.off('ice-candidate', handleIceCandidate);
       socket.off('receive-message', handleMessage);
     };
-  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived, isInitiator, userName]);
+  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived, isInitiator, userName, showChat, showNotification]);
 
   // Join room when socket is ready
   useEffect(() => {
@@ -678,7 +698,8 @@ const VideoRoom = () => {
     return () => {
       socket.off('room-joined', handleRoomJoined);
     };
-  }, [socket, createPeerConnection, sendOffer, userName]);
+  }, [socket, createPeerConnection, sendOffer, userName, createAudioAnalyzer]);
+
 
   // Share room functionality
   const getShareLink = () => {
@@ -714,6 +735,75 @@ const VideoRoom = () => {
     setShowShareModal(false);
     setLinkCopied(false);
   };
+
+  // Audio level analysis for active speaker detection
+  const createAudioAnalyzer = useCallback((stream, userId) => {
+    if (!stream) return null;
+    
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const microphone = audioContext.createMediaStreamSource(stream);
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.8;
+    microphone.connect(analyser);
+    
+    audioAnalyzers.current.set(userId, { analyser, dataArray, audioContext });
+    return { analyser, dataArray, audioContext };
+  }, []);
+
+  const analyzeAudioLevels = useCallback(() => {
+    let maxLevel = 0;
+    let currentActiveSpeaker = null;
+    
+    audioAnalyzers.current.forEach(({ analyser, dataArray }, userId) => {
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+      const level = average / 255; // Normalize to 0-1
+      
+      if (level > maxLevel && level > 0.1) { // Threshold to avoid noise
+        maxLevel = level;
+        currentActiveSpeaker = userId;
+      }
+    });
+    
+    setActiveSpeaker(currentActiveSpeaker);
+    
+    animationFrameRef.current = requestAnimationFrame(analyzeAudioLevels);
+  }, []);
+
+  const startAudioAnalysis = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    analyzeAudioLevels();
+  }, [analyzeAudioLevels]);
+
+  const stopAudioAnalysis = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  }, []);
+
+  // Browser notification functionality
+  const requestNotificationPermission = useCallback(async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+  }, []);
+
+  const showNotification = useCallback((message) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('New CMA Meeting Message', {
+        body: `${message.sender}: ${message.text}`,
+        icon: '/favicon.ico',
+        tag: 'cma-chat',
+        requireInteraction: false
+      });
+    }
+  }, []);
 
   // Toggle audio
   const toggleAudio = () => {
@@ -832,6 +922,30 @@ const VideoRoom = () => {
     }
   };
 
+  // Start audio analysis when we have streams
+  useEffect(() => {
+    if (localStream || remoteStreams.size > 0) {
+      startAudioAnalysis();
+    } else {
+      stopAudioAnalysis();
+    }
+    
+    return () => {
+      stopAudioAnalysis();
+      // Clean up all audio analyzers
+      const currentAnalyzers = audioAnalyzers.current;
+      currentAnalyzers.forEach(({ audioContext }) => {
+        audioContext.close();
+      });
+      currentAnalyzers.clear();
+    };
+  }, [localStream, remoteStreams, startAudioAnalysis, stopAudioAnalysis]);
+
+  // Request notification permission on component mount
+  useEffect(() => {
+    requestNotificationPermission();
+  }, [requestNotificationPermission]);
+
   return (
     <Container>
       <Header>
@@ -845,7 +959,7 @@ const VideoRoom = () => {
       <MainContent>
         <VideoGrid>
           {/* Local video */}
-          <VideoContainer>
+          <VideoContainer isActiveSpeaker={activeSpeaker === userName}>
             <StyledVideo
               ref={localVideoRef}
               autoPlay
@@ -857,7 +971,7 @@ const VideoRoom = () => {
 
           {/* Remote videos */}
           {Array.from(remoteStreams.entries()).map(([userId, stream]) => (
-            <VideoContainer key={userId}>
+            <VideoContainer key={userId} isActiveSpeaker={activeSpeaker === userId}>
               <StyledVideo
                 ref={ref => {
                   if (ref) {
