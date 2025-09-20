@@ -165,6 +165,17 @@ io.on('connection', (socket) => {
       socket.emit('existing-users', existingUsers);
     }
   });
+
+  // Handle chat messages
+  socket.on('send-message', (data) => {
+    console.log(`Message from ${data.message.sender} in room ${data.roomId}: ${data.message.text}`);
+    
+    // Broadcast the message to all users in the room
+    socket.to(data.roomId).emit('receive-message', data.message);
+    
+    // Also send back to sender to confirm (optional)
+    socket.emit('receive-message', data.message);
+  });
 });
 
 // Serve static files from React build directory (after all API routes)
