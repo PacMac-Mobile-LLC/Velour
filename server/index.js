@@ -28,6 +28,15 @@ app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'API is working!' });
 });
 
+app.get('/api/socket-test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Socket.IO server is running!',
+    socketPath: '/socket.io/',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get('/api/rooms', (req, res) => {
   const roomsList = Array.from(rooms.values()).map(room => ({
     id: room.id,
@@ -267,5 +276,7 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 Socket.IO server initialized`);
+  console.log(`🌐 CORS configured for:`, process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site"] : "http://localhost:3000");
 });
