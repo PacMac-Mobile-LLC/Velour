@@ -395,17 +395,22 @@ const VideoRoom = () => {
 
     const handleUserConnected = (userId) => {
       console.log('User connected:', userId);
-      setParticipants(prev => prev + 1);
-      createPeerConnection(userId);
-      
-      // Only send offer if we are the initiator (first user or designated initiator)
-      if (isInitiator) {
-        console.log('Sending offer as initiator to:', userId);
-        setTimeout(() => {
-          sendOffer(userId);
-        }, 1000); // Small delay to ensure peer connection is ready
+      // Only increment if it's not ourselves
+      if (userId !== userName) {
+        setParticipants(prev => prev + 1);
+        createPeerConnection(userId);
+        
+        // Only send offer if we are the initiator (first user or designated initiator)
+        if (isInitiator) {
+          console.log('Sending offer as initiator to:', userId);
+          setTimeout(() => {
+            sendOffer(userId);
+          }, 1000); // Small delay to ensure peer connection is ready
+        } else {
+          console.log('Waiting for offer from initiator:', userId);
+        }
       } else {
-        console.log('Waiting for offer from initiator:', userId);
+        console.log('Ignoring self-connection event for:', userId);
       }
     };
 
@@ -457,7 +462,7 @@ const VideoRoom = () => {
       socket.off('ice-candidate', handleIceCandidate);
       socket.off('receive-message', handleMessage);
     };
-  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived, isInitiator]);
+  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived, isInitiator, userName]);
 
   // Join room when socket is ready
   useEffect(() => {
@@ -479,6 +484,28 @@ const VideoRoom = () => {
         setIsInitiator(false);
         console.log('I am not the initiator, waiting for offers');
       }
+      
+      // Set the correct participant count
+      if (data.totalParticipants) {
+        setParticipants(data.totalParticipants);
+        console.log(`Total participants in room: ${data.totalParticipants}`);
+      }
+      
+      // Create peer connections for existing participants
+      if (data.existingParticipants && data.existingParticipants.length > 0) {
+        console.log('Creating peer connections for existing participants:', data.existingParticipants);
+        data.existingParticipants.forEach(userId => {
+          if (userId !== userName) { // Don't create connection to self
+            createPeerConnection(userId);
+            // If we're the initiator, send offers to existing participants
+            if (data.isInitiator) {
+              setTimeout(() => {
+                sendOffer(userId);
+              }, 1000);
+            }
+          }
+        });
+      }
     };
 
     socket.on('room-joined', handleRoomJoined);
@@ -486,7 +513,7 @@ const VideoRoom = () => {
     return () => {
       socket.off('room-joined', handleRoomJoined);
     };
-  }, [socket]);
+  }, [socket, createPeerConnection, sendOffer, userName]);
 
   // Toggle audio
   const toggleAudio = () => {

@@ -91,13 +91,21 @@ io.on('connection', (socket) => {
         createdAt: new Date()
       });
     }
+    
+    // Get existing participants before adding the new user
+    const existingParticipants = Array.from(rooms.get(roomId).participants);
     rooms.get(roomId).participants.add(userId);
     
-    // Notify the joining user if they are the initiator
-    socket.emit('room-joined', { isInitiator });
+    // Notify the joining user if they are the initiator and send existing participants
+    socket.emit('room-joined', { 
+      isInitiator, 
+      existingParticipants,
+      totalParticipants: rooms.get(roomId).participants.size
+    });
     
     console.log(`User ${userId} joined room ${roomId} (initiator: ${isInitiator})`);
     console.log(`Room ${roomId} now has ${rooms.get(roomId).participants.size} participants`);
+    console.log(`Existing participants: ${existingParticipants.join(', ')}`);
     
     // Notify other users in the room about the new user
     socket.to(roomId).emit('user-connected', userId);
