@@ -464,14 +464,6 @@ const VideoRoom = () => {
   const animationFrameRef = useRef(null);
   const userName = searchParams.get('name') || 'Anonymous';
   
-  // Check if we need to show the name entry modal
-  useEffect(() => {
-    const nameParam = searchParams.get('name');
-    if (!nameParam || nameParam.trim() === '') {
-      setShowNameModal(true);
-    }
-  }, [searchParams]);
-
   // Connection retry with exponential backoff
   const retryConnection = useCallback(() => {
     if (connectionRetries < maxRetries) {
@@ -480,17 +472,22 @@ const VideoRoom = () => {
       
       setTimeout(() => {
         setConnectionRetries(prev => prev + 1);
-        // Force a new socket connection
-        if (socket) {
-          socket.disconnect();
-        }
-        // The useEffect will trigger a new connection
+        // Force a page reload to trigger new connection
+        window.location.reload();
       }, delay);
     } else {
       console.error('Max connection retries reached. Please refresh the page.');
       alert('Unable to connect to the server. Please refresh the page and try again.');
     }
-  }, [connectionRetries, maxRetries, socket]);
+  }, [connectionRetries, maxRetries]);
+  
+  // Check if we need to show the name entry modal
+  useEffect(() => {
+    const nameParam = searchParams.get('name');
+    if (!nameParam || nameParam.trim() === '') {
+      setShowNameModal(true);
+    }
+  }, [searchParams]);
 
   // Audio level analysis for active speaker detection
   const createAudioAnalyzer = useCallback((stream, userId) => {
