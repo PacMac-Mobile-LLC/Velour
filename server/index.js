@@ -11,7 +11,9 @@ const io = socketIo(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site", "https://cmameet.onrender.com"] : "http://localhost:3000",
     methods: ["GET", "POST"]
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 
 const PORT = process.env.PORT || 5001;
@@ -107,6 +109,8 @@ app.get('/api/rooms/:roomId', (req, res) => {
 // Socket.io connection handling
 io.on('connection', (socket) => {
   console.log('New socket connection:', socket.id);
+  console.log('Socket transport:', socket.conn.transport.name);
+  console.log('Socket ready state:', socket.conn.readyState);
 
   socket.on('join-room', (roomId, userId) => {
     console.log(`Socket ${socket.id} joining room ${roomId} as user ${userId}`);
@@ -152,8 +156,16 @@ io.on('connection', (socket) => {
     console.log(`Notified other users in room ${roomId} about new user ${userId}`);
   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+  socket.on('disconnect', (reason) => {
+    console.log('User disconnected:', socket.id, 'Reason:', reason);
+  });
+
+  socket.on('error', (error) => {
+    console.error('Socket error:', socket.id, error);
+  });
+
+  socket.on('connect_error', (error) => {
+    console.error('Socket connection error:', socket.id, error);
   });
 
   socket.on('offer', (data) => {

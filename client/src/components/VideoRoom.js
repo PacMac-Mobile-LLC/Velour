@@ -475,18 +475,33 @@ const VideoRoom = () => {
       ? window.location.origin 
       : 'http://localhost:5001';
     console.log('Connecting to socket:', socketUrl);
-    const newSocket = io(socketUrl);
+    
+    const newSocket = io(socketUrl, {
+      transports: ['websocket', 'polling'],
+      timeout: 20000,
+      forceNew: true
+    });
     
     newSocket.on('connect', () => {
       console.log('Socket connected with ID:', newSocket.id);
+      console.log('Socket transport:', newSocket.io.engine.transport.name);
     });
     
-    newSocket.on('disconnect', () => {
-      console.log('Socket disconnected');
+    newSocket.on('disconnect', (reason) => {
+      console.log('Socket disconnected, reason:', reason);
     });
     
     newSocket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
+      console.error('Error details:', error.message, error.description, error.context);
+    });
+    
+    newSocket.on('reconnect', (attemptNumber) => {
+      console.log('Socket reconnected after', attemptNumber, 'attempts');
+    });
+    
+    newSocket.on('reconnect_error', (error) => {
+      console.error('Socket reconnection error:', error);
     });
     
     setSocket(newSocket);
