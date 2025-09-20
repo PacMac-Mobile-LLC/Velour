@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site"] : "http://localhost:3000",
+    origin: process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site", "https://cmameet.onrender.com"] : "http://localhost:3000",
     methods: ["GET", "POST"]
   }
 });
@@ -187,7 +187,10 @@ const buildPaths = [
   path.join('/opt/render/project/build'),
   path.join('/opt/render/project/src/build'),
   path.join(process.cwd(), 'build'),
-  path.join(process.cwd(), '../build')
+  path.join(process.cwd(), '../build'),
+  // Render Web Service specific paths
+  path.join('/opt/render/project/src'),
+  path.join('/opt/render/project')
 ];
 
 let buildPath = null;
