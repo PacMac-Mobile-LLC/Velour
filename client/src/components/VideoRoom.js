@@ -357,6 +357,8 @@ const VideoRoom = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
+  console.log('VideoRoom component rendering, roomId:', roomId);
+  
   const [socket, setSocket] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStreams, setRemoteStreams] = useState(new Map());
@@ -738,39 +740,50 @@ const VideoRoom = () => {
 
   // Audio level analysis for active speaker detection
   const createAudioAnalyzer = useCallback((stream, userId) => {
-    if (!stream) return null;
-    
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
-    const microphone = audioContext.createMediaStreamSource(stream);
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    
-    analyser.fftSize = 256;
-    analyser.smoothingTimeConstant = 0.8;
-    microphone.connect(analyser);
-    
-    audioAnalyzers.current.set(userId, { analyser, dataArray, audioContext });
-    return { analyser, dataArray, audioContext };
+    try {
+      if (!stream) return null;
+      
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.8;
+      microphone.connect(analyser);
+      
+      audioAnalyzers.current.set(userId, { analyser, dataArray, audioContext });
+      return { analyser, dataArray, audioContext };
+    } catch (error) {
+      console.error('Error creating audio analyzer:', error);
+      return null;
+    }
   }, []);
 
   const analyzeAudioLevels = useCallback(() => {
-    let maxLevel = 0;
-    let currentActiveSpeaker = null;
-    
-    audioAnalyzers.current.forEach(({ analyser, dataArray }, userId) => {
-      analyser.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
-      const level = average / 255; // Normalize to 0-1
+    try {
+      let maxLevel = 0;
+      let currentActiveSpeaker = null;
       
-      if (level > maxLevel && level > 0.1) { // Threshold to avoid noise
-        maxLevel = level;
-        currentActiveSpeaker = userId;
-      }
-    });
-    
-    setActiveSpeaker(currentActiveSpeaker);
-    
-    animationFrameRef.current = requestAnimationFrame(analyzeAudioLevels);
+      audioAnalyzers.current.forEach(({ analyser, dataArray }, userId) => {
+        if (analyser && dataArray) {
+          analyser.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+          const level = average / 255; // Normalize to 0-1
+          
+          if (level > maxLevel && level > 0.1) { // Threshold to avoid noise
+            maxLevel = level;
+            currentActiveSpeaker = userId;
+          }
+        }
+      });
+      
+      setActiveSpeaker(currentActiveSpeaker);
+      
+      animationFrameRef.current = requestAnimationFrame(analyzeAudioLevels);
+    } catch (error) {
+      console.error('Error in audio analysis:', error);
+    }
   }, []);
 
   const startAudioAnalysis = useCallback(() => {
@@ -789,19 +802,27 @@ const VideoRoom = () => {
 
   // Browser notification functionality
   const requestNotificationPermission = useCallback(async () => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      await Notification.requestPermission();
+    try {
+      if ('Notification' in window && Notification.permission === 'default') {
+        await Notification.requestPermission();
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
     }
   }, []);
 
   const showNotification = useCallback((message) => {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('New CMA Meeting Message', {
-        body: `${message.sender}: ${message.text}`,
-        icon: '/favicon.ico',
-        tag: 'cma-chat',
-        requireInteraction: false
-      });
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('New CMA Meeting Message', {
+          body: `${message.sender}: ${message.text}`,
+          icon: '/favicon.ico',
+          tag: 'cma-chat',
+          requireInteraction: false
+        });
+      }
+    } catch (error) {
+      console.error('Error showing notification:', error);
     }
   }, []);
 
@@ -972,6 +993,25 @@ const VideoRoom = () => {
       clearInterval(pingInterval);
     };
   }, []);
+
+  // Add error boundary fallback
+  if (!roomId) {
+    return (
+      <Container>
+        <Header>
+          <RoomInfo>
+            <Users size={20} />
+            <RoomId>CMA Meeting: Loading...</RoomId>
+          </RoomInfo>
+        </Header>
+        <MainContent>
+          <div style={{ color: 'white', padding: '20px', textAlign: 'center' }}>
+            Loading meeting room...
+          </div>
+        </MainContent>
+      </Container>
+    );
+  }
 
   return (
     <Container>
