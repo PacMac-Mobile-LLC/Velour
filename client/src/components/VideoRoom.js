@@ -352,6 +352,85 @@ const ShareInstructionsText = styled.p`
   line-height: 1.4;
 `;
 
+// Name Entry Modal Components
+const NameModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const NameModalContent = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+`;
+
+const NameModalHeader = styled.div`
+  margin-bottom: 24px;
+`;
+
+const NameModalTitle = styled.h2`
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+`;
+
+const NameModalSubtitle = styled.p`
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+`;
+
+const NameInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+`;
+
+const NameModalButton = styled.button`
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+
+  &:hover {
+    background: #0056b3;
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
 const VideoRoom = () => {
   const { roomId } = useParams();
   const [searchParams] = useSearchParams();
@@ -372,6 +451,8 @@ const VideoRoom = () => {
   const [isInitiator, setIsInitiator] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [tempUserName, setTempUserName] = useState('');
   const [activeSpeaker, setActiveSpeaker] = useState(null);
 
   const localVideoRef = useRef(null);
@@ -380,6 +461,14 @@ const VideoRoom = () => {
   const audioAnalyzers = useRef(new Map());
   const animationFrameRef = useRef(null);
   const userName = searchParams.get('name') || 'Anonymous';
+  
+  // Check if we need to show the name entry modal
+  useEffect(() => {
+    const nameParam = searchParams.get('name');
+    if (!nameParam || nameParam.trim() === '') {
+      setShowNameModal(true);
+    }
+  }, [searchParams]);
 
   // Audio level analysis for active speaker detection
   const createAudioAnalyzer = useCallback((stream, userId) => {
@@ -864,6 +953,24 @@ const VideoRoom = () => {
     setLinkCopied(false);
   };
 
+  // Name modal functions
+  const handleNameSubmit = () => {
+    if (tempUserName.trim()) {
+      // Update the URL with the entered name
+      const newUrl = `${window.location.pathname}?name=${encodeURIComponent(tempUserName.trim())}`;
+      window.history.replaceState({}, '', newUrl);
+      setShowNameModal(false);
+      // Reload the page to pick up the new name parameter
+      window.location.reload();
+    }
+  };
+
+  const handleNameKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleNameSubmit();
+    }
+  };
+
   // Toggle audio
   const toggleAudio = () => {
     if (localStream) {
@@ -1221,6 +1328,36 @@ const VideoRoom = () => {
             </ShareInstructions>
           </ShareModalContent>
         </ShareModal>
+      )}
+
+      {/* Name Entry Modal */}
+      {showNameModal && (
+        <NameModal>
+          <NameModalContent>
+            <NameModalHeader>
+              <NameModalTitle>Join CMA Meeting</NameModalTitle>
+              <NameModalSubtitle>
+                Please enter your name to join the meeting
+              </NameModalSubtitle>
+            </NameModalHeader>
+            
+            <NameInput
+              type="text"
+              placeholder="Enter your name"
+              value={tempUserName}
+              onChange={(e) => setTempUserName(e.target.value)}
+              onKeyPress={handleNameKeyPress}
+              autoFocus
+            />
+            
+            <NameModalButton
+              onClick={handleNameSubmit}
+              disabled={!tempUserName.trim()}
+            >
+              Join Meeting
+            </NameModalButton>
+          </NameModalContent>
+        </NameModal>
       )}
     </Container>
   );
