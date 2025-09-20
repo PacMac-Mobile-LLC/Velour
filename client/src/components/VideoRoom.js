@@ -11,7 +11,10 @@ import {
   MessageSquare, 
   Phone, 
   Users,
-  Send
+  Send,
+  Share2,
+  Copy,
+  Check
 } from 'lucide-react';
 
 const Container = styled.div`
@@ -228,6 +231,124 @@ const ControlButton = styled.button`
   }
 `;
 
+const ShareModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+`;
+
+const ShareModalContent = styled.div`
+  background: #2d2d2d;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  color: white;
+`;
+
+const ShareModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const ShareModalTitle = styled.h3`
+  margin: 0;
+  font-size: 1.3rem;
+  color: white;
+`;
+
+const CloseModalButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const ShareSection = styled.div`
+  margin-bottom: 20px;
+`;
+
+const ShareLabel = styled.label`
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #ccc;
+`;
+
+const ShareInputContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const ShareInput = styled.input`
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+  font-size: 0.9rem;
+  
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+`;
+
+const CopyButton = styled.button`
+  background: #667eea;
+  border: none;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #5a6fd8;
+  }
+  
+  &:disabled {
+    background: #28a745;
+    cursor: not-allowed;
+  }
+`;
+
+const ShareInstructions = styled.div`
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+`;
+
+const ShareInstructionsText = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.4;
+`;
+
 const VideoRoom = () => {
   const { roomId } = useParams();
   const [searchParams] = useSearchParams();
@@ -244,6 +365,8 @@ const VideoRoom = () => {
   const [newMessage, setNewMessage] = useState('');
   const [participants, setParticipants] = useState(1);
   const [isInitiator, setIsInitiator] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const localVideoRef = useRef(null);
   const remoteVideoRefs = useRef(new Map());
@@ -557,6 +680,41 @@ const VideoRoom = () => {
     };
   }, [socket, createPeerConnection, sendOffer, userName]);
 
+  // Share room functionality
+  const getShareLink = () => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/room/${roomId}?name=`;
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(getShareLink());
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = getShareLink();
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    }
+  };
+
+  const openShareModal = () => {
+    setShowShareModal(true);
+    setLinkCopied(false);
+  };
+
+  const closeShareModal = () => {
+    setShowShareModal(false);
+    setLinkCopied(false);
+  };
+
   // Toggle audio
   const toggleAudio = () => {
     if (localStream) {
@@ -779,6 +937,13 @@ const VideoRoom = () => {
         </ControlButton>
 
         <ControlButton
+          onClick={openShareModal}
+          title="Share room link"
+        >
+          <Share2 size={20} />
+        </ControlButton>
+
+        <ControlButton
           onClick={leaveRoom}
           className="leave"
           title="Leave room"
@@ -786,6 +951,54 @@ const VideoRoom = () => {
           <Phone size={20} />
         </ControlButton>
       </Controls>
+
+      {showShareModal && (
+        <ShareModal onClick={closeShareModal}>
+          <ShareModalContent onClick={(e) => e.stopPropagation()}>
+            <ShareModalHeader>
+              <ShareModalTitle>Share Meeting</ShareModalTitle>
+              <CloseModalButton onClick={closeShareModal}>×</CloseModalButton>
+            </ShareModalHeader>
+            
+            <ShareSection>
+              <ShareLabel>Meeting Link</ShareLabel>
+              <ShareInputContainer>
+                <ShareInput
+                  type="text"
+                  value={getShareLink()}
+                  readOnly
+                />
+                <CopyButton
+                  onClick={copyToClipboard}
+                  disabled={linkCopied}
+                >
+                  {linkCopied ? (
+                    <>
+                      <Check size={16} />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} />
+                      Copy
+                    </>
+                  )}
+                </CopyButton>
+              </ShareInputContainer>
+            </ShareSection>
+
+            <ShareInstructions>
+              <ShareInstructionsText>
+                <strong>How to invite others:</strong><br />
+                1. Copy the meeting link above<br />
+                2. Share it via text, email, or any messaging app<br />
+                3. Recipients can click the link to join the meeting<br />
+                4. They'll be prompted to enter their name before joining
+              </ShareInstructionsText>
+            </ShareInstructions>
+          </ShareModalContent>
+        </ShareModal>
+      )}
     </Container>
   );
 };
