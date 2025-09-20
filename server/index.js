@@ -37,6 +37,28 @@ app.get('/api/socket-test', (req, res) => {
   });
 });
 
+// Health check endpoint for monitoring
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    rooms: rooms.size,
+    activeConnections: io.engine.clientsCount
+  });
+});
+
+// Ping endpoint to keep service alive
+app.get('/api/ping', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Pong! Service is alive',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.get('/api/rooms', (req, res) => {
   const roomsList = Array.from(rooms.values()).map(room => ({
     id: room.id,

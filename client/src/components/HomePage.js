@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone } from 'lucide-react';
 import styled from 'styled-components';
@@ -342,6 +342,33 @@ const HomePage = () => {
       setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     }, 5000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Ping server every 5 minutes to keep Render service alive
+  useEffect(() => {
+    const pingServer = async () => {
+      try {
+        const response = await fetch('/api/ping');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Server ping successful from homepage:', data.message);
+        } else {
+          console.warn('Server ping failed from homepage:', response.status);
+        }
+      } catch (error) {
+        console.error('Server ping error from homepage:', error);
+      }
+    };
+
+    // Ping immediately on mount
+    pingServer();
+
+    // Set up interval to ping every 5 minutes (300,000 ms)
+    const pingInterval = setInterval(pingServer, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(pingInterval);
+    };
   }, []);
 
   const handleCreateRoom = async (e) => {

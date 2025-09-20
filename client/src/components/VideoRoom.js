@@ -946,6 +946,33 @@ const VideoRoom = () => {
     requestNotificationPermission();
   }, [requestNotificationPermission]);
 
+  // Ping server every 5 minutes to keep Render service alive
+  useEffect(() => {
+    const pingServer = async () => {
+      try {
+        const response = await fetch('/api/ping');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Server ping successful:', data.message);
+        } else {
+          console.warn('Server ping failed:', response.status);
+        }
+      } catch (error) {
+        console.error('Server ping error:', error);
+      }
+    };
+
+    // Ping immediately on mount
+    pingServer();
+
+    // Set up interval to ping every 5 minutes (300,000 ms)
+    const pingInterval = setInterval(pingServer, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(pingInterval);
+    };
+  }, []);
+
   return (
     <Container>
       <Header>
