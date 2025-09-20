@@ -216,6 +216,7 @@ const VideoRoom = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [participants, setParticipants] = useState(1);
+  const [isInitiator, setIsInitiator] = useState(false);
 
   const localVideoRef = useRef(null);
   const remoteVideoRefs = useRef(new Map());
@@ -285,23 +286,28 @@ const VideoRoom = () => {
   // Handle offer received
   const handleOfferReceived = useCallback(async (data) => {
     const { offer, userId } = data;
+    console.log('Processing offer from:', userId);
     let peerConnection = peerConnections.current.get(userId);
     
     if (!peerConnection) {
+      console.log('Creating new peer connection for offer from:', userId);
       createPeerConnection(userId);
       peerConnection = peerConnections.current.get(userId);
     }
 
     try {
       await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      console.log('Set remote description for:', userId);
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
+      console.log('Created and set local answer for:', userId);
       
       socket.emit('answer', {
         answer,
         roomId,
         userId
       });
+      console.log('Sent answer to:', userId);
     } catch (error) {
       console.error('Error handling offer:', error);
     }
@@ -310,14 +316,18 @@ const VideoRoom = () => {
   // Handle answer received
   const handleAnswerReceived = useCallback(async (data) => {
     const { answer, userId } = data;
+    console.log('Processing answer from:', userId);
     const peerConnection = peerConnections.current.get(userId);
     
     if (peerConnection) {
       try {
         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        console.log('Set remote answer for:', userId);
       } catch (error) {
         console.error('Error handling answer:', error);
       }
+    } else {
+      console.error('No peer connection found for answer from:', userId);
     }
   }, []);
 
@@ -387,10 +397,16 @@ const VideoRoom = () => {
       console.log('User connected:', userId);
       setParticipants(prev => prev + 1);
       createPeerConnection(userId);
-      // Send offer to the newly connected user
-      setTimeout(() => {
-        sendOffer(userId);
-      }, 1000); // Small delay to ensure peer connection is ready
+      
+      // Only send offer if we are the initiator (first user or designated initiator)
+      if (isInitiator) {
+        console.log('Sending offer as initiator to:', userId);
+        setTimeout(() => {
+          sendOffer(userId);
+        }, 1000); // Small delay to ensure peer connection is ready
+      } else {
+        console.log('Waiting for offer from initiator:', userId);
+      }
     };
 
     const handleUserDisconnected = (userId) => {
@@ -441,7 +457,7 @@ const VideoRoom = () => {
       socket.off('ice-candidate', handleIceCandidate);
       socket.off('receive-message', handleMessage);
     };
-  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived]);
+  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived, isInitiator]);
 
   // Join room when socket is ready
   useEffect(() => {
@@ -449,6 +465,28 @@ const VideoRoom = () => {
       socket.emit('join-room', roomId, userName);
     }
   }, [socket, roomId, userName]);
+
+  // Listen for room-joined event to determine if we're the initiator
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleRoomJoined = (data) => {
+      console.log('Room joined response:', data);
+      if (data.isInitiator) {
+        setIsInitiator(true);
+        console.log('I am the initiator for this room');
+      } else {
+        setIsInitiator(false);
+        console.log('I am not the initiator, waiting for offers');
+      }
+    };
+
+    socket.on('room-joined', handleRoomJoined);
+
+    return () => {
+      socket.off('room-joined', handleRoomJoined);
+    };
+  }, [socket]);
 
   // Toggle audio
   const toggleAudio = () => {

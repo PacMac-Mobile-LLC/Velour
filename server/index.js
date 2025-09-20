@@ -80,6 +80,9 @@ io.on('connection', (socket) => {
   socket.on('join-room', (roomId, userId) => {
     socket.join(roomId);
     
+    // Check if this is the first user in the room (initiator)
+    const isInitiator = !rooms.has(roomId) || rooms.get(roomId).participants.size === 0;
+    
     // Add user to room
     if (!rooms.has(roomId)) {
       rooms.set(roomId, {
@@ -90,7 +93,10 @@ io.on('connection', (socket) => {
     }
     rooms.get(roomId).participants.add(userId);
     
-    console.log(`User ${userId} joined room ${roomId}`);
+    // Notify the joining user if they are the initiator
+    socket.emit('room-joined', { isInitiator });
+    
+    console.log(`User ${userId} joined room ${roomId} (initiator: ${isInitiator})`);
     console.log(`Room ${roomId} now has ${rooms.get(roomId).participants.size} participants`);
     
     // Notify other users in the room about the new user
