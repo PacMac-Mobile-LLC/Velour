@@ -381,6 +381,94 @@ const VideoRoom = () => {
   const animationFrameRef = useRef(null);
   const userName = searchParams.get('name') || 'Anonymous';
 
+  // Audio level analysis for active speaker detection
+  const createAudioAnalyzer = useCallback((stream, userId) => {
+    try {
+      if (!stream) return null;
+      
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.8;
+      microphone.connect(analyser);
+      
+      audioAnalyzers.current.set(userId, { analyser, dataArray, audioContext });
+      return { analyser, dataArray, audioContext };
+    } catch (error) {
+      console.error('Error creating audio analyzer:', error);
+      return null;
+    }
+  }, []);
+
+  const analyzeAudioLevels = useCallback(() => {
+    try {
+      let maxLevel = 0;
+      let currentActiveSpeaker = null;
+      
+      audioAnalyzers.current.forEach(({ analyser, dataArray }, userId) => {
+        if (analyser && dataArray) {
+          analyser.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+          const level = average / 255; // Normalize to 0-1
+          
+          if (level > maxLevel && level > 0.1) { // Threshold to avoid noise
+            maxLevel = level;
+            currentActiveSpeaker = userId;
+          }
+        }
+      });
+      
+      setActiveSpeaker(currentActiveSpeaker);
+      
+      animationFrameRef.current = requestAnimationFrame(analyzeAudioLevels);
+    } catch (error) {
+      console.error('Error in audio analysis:', error);
+    }
+  }, []);
+
+  const startAudioAnalysis = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    analyzeAudioLevels();
+  }, [analyzeAudioLevels]);
+
+  const stopAudioAnalysis = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  }, []);
+
+  // Browser notification functionality
+  const requestNotificationPermission = useCallback(async () => {
+    try {
+      if ('Notification' in window && Notification.permission === 'default') {
+        await Notification.requestPermission();
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+    }
+  }, []);
+
+  const showNotification = useCallback((message) => {
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('New CMA Meeting Message', {
+          body: `${message.sender}: ${message.text}`,
+          icon: '/favicon.ico',
+          tag: 'cma-chat',
+          requireInteraction: false
+        });
+      }
+    } catch (error) {
+      console.error('Error showing notification:', error);
+    }
+  }, []);
+
   // Initialize socket connection
   useEffect(() => {
     const socketUrl = process.env.NODE_ENV === 'production' 
@@ -737,94 +825,6 @@ const VideoRoom = () => {
     setShowShareModal(false);
     setLinkCopied(false);
   };
-
-  // Audio level analysis for active speaker detection
-  const createAudioAnalyzer = useCallback((stream, userId) => {
-    try {
-      if (!stream) return null;
-      
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const microphone = audioContext.createMediaStreamSource(stream);
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.8;
-      microphone.connect(analyser);
-      
-      audioAnalyzers.current.set(userId, { analyser, dataArray, audioContext });
-      return { analyser, dataArray, audioContext };
-    } catch (error) {
-      console.error('Error creating audio analyzer:', error);
-      return null;
-    }
-  }, []);
-
-  const analyzeAudioLevels = useCallback(() => {
-    try {
-      let maxLevel = 0;
-      let currentActiveSpeaker = null;
-      
-      audioAnalyzers.current.forEach(({ analyser, dataArray }, userId) => {
-        if (analyser && dataArray) {
-          analyser.getByteFrequencyData(dataArray);
-          const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
-          const level = average / 255; // Normalize to 0-1
-          
-          if (level > maxLevel && level > 0.1) { // Threshold to avoid noise
-            maxLevel = level;
-            currentActiveSpeaker = userId;
-          }
-        }
-      });
-      
-      setActiveSpeaker(currentActiveSpeaker);
-      
-      animationFrameRef.current = requestAnimationFrame(analyzeAudioLevels);
-    } catch (error) {
-      console.error('Error in audio analysis:', error);
-    }
-  }, []);
-
-  const startAudioAnalysis = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    analyzeAudioLevels();
-  }, [analyzeAudioLevels]);
-
-  const stopAudioAnalysis = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-  }, []);
-
-  // Browser notification functionality
-  const requestNotificationPermission = useCallback(async () => {
-    try {
-      if ('Notification' in window && Notification.permission === 'default') {
-        await Notification.requestPermission();
-      }
-    } catch (error) {
-      console.error('Error requesting notification permission:', error);
-    }
-  }, []);
-
-  const showNotification = useCallback((message) => {
-    try {
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('New CMA Meeting Message', {
-          body: `${message.sender}: ${message.text}`,
-          icon: '/favicon.ico',
-          tag: 'cma-chat',
-          requireInteraction: false
-        });
-      }
-    } catch (error) {
-      console.error('Error showing notification:', error);
-    }
-  }, []);
 
   // Toggle audio
   const toggleAudio = () => {
