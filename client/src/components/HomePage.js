@@ -1,14 +1,87 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Plus, ArrowRight } from 'lucide-react';
+import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar } from 'lucide-react';
 import styled from 'styled-components';
 
 const Container = styled.div`
   min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
+`;
+
+const PageHeader = styled.div`
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+`;
+
+const HeaderTitle = styled.h1`
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+`;
+
+const HeaderSubtitle = styled.p`
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 30px;
+`;
+
+const ResourceLinks = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const ResourceLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+`;
+
+const QuoteSection = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  text-align: center;
+`;
+
+const Quote = styled.blockquote`
+  font-size: 1.1rem;
+  font-style: italic;
+  color: white;
+  margin: 0;
+  line-height: 1.6;
+`;
+
+const QuoteAuthor = styled.cite`
+  display: block;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  opacity: 0.8;
 `;
 
 const Card = styled.div`
@@ -143,6 +216,40 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Inspirational quotes for recovery
+  const quotes = [
+    {
+      text: "We are not bad people trying to get good, we are sick people trying to get well.",
+      author: "CMA Literature"
+    },
+    {
+      text: "One day at a time, one moment at a time, we can stay clean and sober.",
+      author: "CMA Tradition"
+    },
+    {
+      text: "The only requirement for membership is a desire to stop using.",
+      author: "CMA Third Tradition"
+    },
+    {
+      text: "We can't do it alone, but together we can do what we could never do alone.",
+      author: "CMA Fellowship"
+    },
+    {
+      text: "Recovery is not about perfection, it's about progress.",
+      author: "CMA Wisdom"
+    }
+  ];
+
+  const [currentQuote, setCurrentQuote] = useState(quotes[0]);
+
+  // Rotate quotes every 5 seconds
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [quotes]);
+
   const handleCreateRoom = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -192,21 +299,46 @@ const HomePage = () => {
 
   return (
     <Container>
+      <PageHeader>
+        <HeaderTitle>CMA Virtual Meetings</HeaderTitle>
+        <HeaderSubtitle>Supporting recovery through connection</HeaderSubtitle>
+        
+        <ResourceLinks>
+          <ResourceLink href="https://www.crystalmeth.org/" target="_blank" rel="noopener noreferrer">
+            <ExternalLink size={16} />
+            CMA Official Site
+          </ResourceLink>
+          <ResourceLink href="https://www.crystalmeth.org/cma-meeting-directory/" target="_blank" rel="noopener noreferrer">
+            <Calendar size={16} />
+            Meeting Directory
+          </ResourceLink>
+          <ResourceLink href="https://www.crystalmeth.org/to-the-public/what-is-crystal-meth-anonymous/" target="_blank" rel="noopener noreferrer">
+            <Users size={16} />
+            About CMA
+          </ResourceLink>
+        </ResourceLinks>
+
+        <QuoteSection>
+          <Quote>"{currentQuote.text}"</Quote>
+          <QuoteAuthor>— {currentQuote.author}</QuoteAuthor>
+        </QuoteSection>
+      </PageHeader>
+
       <Card>
         <Header>
           <Icon>
-            <Camera size={30} />
+            <Heart size={30} />
           </Icon>
-          <Title>Zoom Clone</Title>
-          <Subtitle>Free video conferencing for everyone</Subtitle>
+          <Title>Join a Virtual Meeting</Title>
+          <Subtitle>Connect with your CMA fellowship online</Subtitle>
         </Header>
 
         <Form onSubmit={handleCreateRoom}>
           <InputGroup>
-            <Label>Your Name</Label>
+            <Label>Your Name (First Name Only)</Label>
             <Input
               type="text"
-              placeholder="Enter your name"
+              placeholder="Enter your first name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -214,10 +346,10 @@ const HomePage = () => {
           </InputGroup>
 
           <InputGroup>
-            <Label>Room ID (optional)</Label>
+            <Label>Meeting ID (if joining existing meeting)</Label>
             <Input
               type="text"
-              placeholder="Enter room ID to join existing room"
+              placeholder="Enter meeting ID to join existing meeting"
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
             />
@@ -226,11 +358,11 @@ const HomePage = () => {
           <ButtonGroup>
             <CreateButton type="submit" disabled={isLoading}>
               <Plus size={20} />
-              Create Room
+              Start Meeting
             </CreateButton>
             <JoinButton type="button" onClick={handleJoinRoom} disabled={isLoading}>
               <ArrowRight size={20} />
-              Join Room
+              Join Meeting
             </JoinButton>
           </ButtonGroup>
         </Form>

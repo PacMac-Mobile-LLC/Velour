@@ -88,6 +88,16 @@ const ChatPanel = styled.div`
   display: flex;
   flex-direction: column;
   border-left: 1px solid #444;
+  
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    border-left: none;
+  }
 `;
 
 const ChatHeader = styled.div`
@@ -95,6 +105,23 @@ const ChatHeader = styled.div`
   border-bottom: 1px solid #444;
   color: white;
   font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: block;
+  }
 `;
 
 const ChatMessages = styled.div`
@@ -652,8 +679,8 @@ const VideoRoom = () => {
       <Header>
         <RoomInfo>
           <Users size={20} />
-          <RoomId>Room: {roomId}</RoomId>
-          <span>({participants} participants)</span>
+          <RoomId>CMA Meeting: {roomId}</RoomId>
+          <span>({participants} members)</span>
         </RoomInfo>
       </Header>
 
@@ -690,7 +717,10 @@ const VideoRoom = () => {
 
         {showChat && (
           <ChatPanel>
-            <ChatHeader>Chat</ChatHeader>
+            <ChatHeader>
+              <span>CMA Fellowship Chat</span>
+              <CloseButton onClick={() => setShowChat(false)}>×</CloseButton>
+            </ChatHeader>
             <ChatMessages>
               {messages.map((message, index) => (
                 <Message key={index} isOwn={message.sender === userName}>
@@ -702,7 +732,7 @@ const VideoRoom = () => {
             <ChatInput>
               <MessageInput
                 type="text"
-                placeholder="Type a message..."
+                placeholder="Share your experience, strength, and hope..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
