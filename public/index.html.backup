@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Clone - Video Conferencing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status h3 {
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+        
+        .features {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+        
+        .features h3 {
+            color: white;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .feature-list {
+            list-style: none;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: "✅";
+            margin-right: 0.5rem;
+        }
+        
+        .url {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            word-break: break-all;
+        }
+        
+        .url strong {
+            color: #4CAF50;
+        }
+        
+        .note {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .note p {
+            color: #FFC107;
+            font-size: 0.9rem;
+        }
+        
+        .room-actions {
+            margin: 2em 0;
+            text-align: center;
+        }
+        
+        .action-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .join-section {
+            margin-top: 1.5em;
+        }
+        
+        .room-input {
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            margin-right: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        
+        .room-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .room-input:focus {
+            outline: none;
+            border-color: #28a745;
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 Zoom Clone</h1>
+        <p class="subtitle">Free Video Conferencing Platform</p>
+        
+        <div class="status">
+            <h3>🚀 Backend Status: LIVE</h3>
+            <p>Server is running and ready for video calls!</p>
+        </div>
+        
+        <div class="url">
+            <strong>Live URL:</strong><br>
+            https://zoom2-81bz.onrender.com
+        </div>
+        
+        <div class="features">
+            <h3>✨ Features Available</h3>
+            <ul class="feature-list">
+                <li>HD Video Conferencing</li>
+                <li>Real-time Chat</li>
+                <li>Screen Sharing</li>
+                <li>Room Management</li>
+                <li>Mobile Responsive</li>
+                <li>Modern UI Design</li>
+            </ul>
+        </div>
+        
+        <div class="room-actions">
+            <button onclick="createRoom()" class="action-btn create-btn">
+                🎥 Create New Room
+            </button>
+            <div class="join-section">
+                <input type="text" id="roomId" placeholder="Enter Room ID" class="room-input">
+                <button onclick="joinRoom()" class="action-btn join-btn">
+                    🚪 Join Room
+                </button>
+            </div>
+        </div>
+        
+        <div class="note">
+            <p><strong>Note:</strong> Full React app is loading. This is a temporary interface while the main app loads!</p>
+        </div>
+    </div>
+    
+    <script>
+        function createRoom() {
+            // Generate a random room ID
+            const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Create room via API
+            fetch('/api/rooms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ roomId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the room
+                    window.location.href = `/room/${roomId}`;
+                } else {
+                    alert('Failed to create room. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error creating room:', error);
+                // Fallback: redirect anyway (room will be created on join)
+                window.location.href = `/room/${roomId}`;
+            });
+        }
+        
+        function joinRoom() {
+            const roomId = document.getElementById('roomId').value.trim();
+            
+            if (!roomId) {
+                alert('Please enter a room ID');
+                return;
+            }
+            
+            // Redirect to the room
+            window.location.href = `/room/${roomId}`;
+        }
+        
+        // Allow Enter key to join room
+        document.getElementById('roomId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                joinRoom();
+            }
+        });
+    </script>
+</body>
+</html>
