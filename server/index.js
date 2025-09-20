@@ -94,14 +94,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('offer', (data) => {
+    console.log(`Forwarding offer from ${socket.id} to room ${data.roomId} for user ${data.userId}`);
     socket.to(data.roomId).emit('offer', data);
   });
 
   socket.on('answer', (data) => {
+    console.log(`Forwarding answer from ${socket.id} to room ${data.roomId} for user ${data.userId}`);
     socket.to(data.roomId).emit('answer', data);
   });
 
   socket.on('ice-candidate', (data) => {
+    console.log(`Forwarding ICE candidate from ${socket.id} to room ${data.roomId} for user ${data.userId}`);
     socket.to(data.roomId).emit('ice-candidate', data);
   });
 

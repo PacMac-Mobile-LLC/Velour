@@ -235,96 +235,9 @@ const VideoRoom = () => {
     };
   }, []);
 
-  // Initialize local media stream
-  useEffect(() => {
-    const initLocalStream = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true
-        });
-        setLocalStream(stream);
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('Error accessing media devices:', error);
-        alert('Unable to access camera and microphone. Please check permissions.');
-      }
-    };
-
-    initLocalStream();
-  }, []);
-
-  // Socket event handlers
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleUserConnected = (userId) => {
-      console.log('User connected:', userId);
-      setParticipants(prev => prev + 1);
-      createPeerConnection(userId);
-    };
-
-    const handleUserDisconnected = (userId) => {
-      console.log('User disconnected:', userId);
-      setParticipants(prev => prev - 1);
-      if (peerConnections.current.has(userId)) {
-        peerConnections.current.get(userId).close();
-        peerConnections.current.delete(userId);
-      }
-      setRemoteStreams(prev => {
-        const newStreams = new Map(prev);
-        newStreams.delete(userId);
-        return newStreams;
-      });
-    };
-
-    const handleOffer = async (data) => {
-      console.log('Received offer from:', data.userId);
-      await handleOfferReceived(data);
-    };
-
-    const handleAnswer = async (data) => {
-      console.log('Received answer from:', data.userId);
-      await handleAnswerReceived(data);
-    };
-
-    const handleIceCandidate = async (data) => {
-      console.log('Received ICE candidate from:', data.userId);
-      await handleIceCandidateReceived(data);
-    };
-
-    const handleMessage = (data) => {
-      setMessages(prev => [...prev, data]);
-    };
-
-    socket.on('user-connected', handleUserConnected);
-    socket.on('user-disconnected', handleUserDisconnected);
-    socket.on('offer', handleOffer);
-    socket.on('answer', handleAnswer);
-    socket.on('ice-candidate', handleIceCandidate);
-    socket.on('receive-message', handleMessage);
-
-    return () => {
-      socket.off('user-connected', handleUserConnected);
-      socket.off('user-disconnected', handleUserDisconnected);
-      socket.off('offer', handleOffer);
-      socket.off('answer', handleAnswer);
-      socket.off('ice-candidate', handleIceCandidate);
-      socket.off('receive-message', handleMessage);
-    };
-  }, [socket]);
-
-  // Join room when socket is ready
-  useEffect(() => {
-    if (socket && roomId) {
-      socket.emit('join-room', roomId, userName);
-    }
-  }, [socket, roomId, userName]);
-
   // Create peer connection
   const createPeerConnection = useCallback((userId) => {
+    console.log('Creating peer connection for user:', userId);
     const peerConnection = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -336,7 +249,10 @@ const VideoRoom = () => {
     if (localStream) {
       localStream.getTracks().forEach(track => {
         peerConnection.addTrack(track, localStream);
+        console.log('Added track to peer connection:', track.kind);
       });
+    } else {
+      console.log('No local stream available when creating peer connection');
     }
 
     // Handle remote stream
@@ -349,12 +265,18 @@ const VideoRoom = () => {
     // Handle ICE candidates
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
+        console.log('Sending ICE candidate to:', userId);
         socket.emit('ice-candidate', {
           candidate: event.candidate,
           roomId,
           userId
         });
       }
+    };
+
+    // Handle connection state changes
+    peerConnection.onconnectionstatechange = () => {
+      console.log(`Connection state with ${userId}:`, peerConnection.connectionState);
     };
 
     peerConnections.current.set(userId, peerConnection);
@@ -416,7 +338,10 @@ const VideoRoom = () => {
   // Send offer to new user
   const sendOffer = useCallback(async (userId) => {
     const peerConnection = peerConnections.current.get(userId);
-    if (!peerConnection) return;
+    if (!peerConnection) {
+      console.log('No peer connection found for user:', userId);
+      return;
+    }
 
     try {
       const offer = await peerConnection.createOffer();
@@ -427,10 +352,103 @@ const VideoRoom = () => {
         roomId,
         userId
       });
+      console.log('Offer sent to user:', userId);
     } catch (error) {
       console.error('Error sending offer:', error);
     }
   }, [socket, roomId]);
+
+  // Initialize local media stream
+  useEffect(() => {
+    const initLocalStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
+        });
+        setLocalStream(stream);
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing media devices:', error);
+        alert('Unable to access camera and microphone. Please check permissions.');
+      }
+    };
+
+    initLocalStream();
+  }, []);
+
+  // Socket event handlers
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleUserConnected = (userId) => {
+      console.log('User connected:', userId);
+      setParticipants(prev => prev + 1);
+      createPeerConnection(userId);
+      // Send offer to the newly connected user
+      setTimeout(() => {
+        sendOffer(userId);
+      }, 1000); // Small delay to ensure peer connection is ready
+    };
+
+    const handleUserDisconnected = (userId) => {
+      console.log('User disconnected:', userId);
+      setParticipants(prev => prev - 1);
+      if (peerConnections.current.has(userId)) {
+        peerConnections.current.get(userId).close();
+        peerConnections.current.delete(userId);
+      }
+      setRemoteStreams(prev => {
+        const newStreams = new Map(prev);
+        newStreams.delete(userId);
+        return newStreams;
+      });
+    };
+
+    const handleOffer = async (data) => {
+      console.log('Received offer from:', data.userId);
+      await handleOfferReceived(data);
+    };
+
+    const handleAnswer = async (data) => {
+      console.log('Received answer from:', data.userId);
+      await handleAnswerReceived(data);
+    };
+
+    const handleIceCandidate = async (data) => {
+      console.log('Received ICE candidate from:', data.userId);
+      await handleIceCandidateReceived(data);
+    };
+
+    const handleMessage = (data) => {
+      setMessages(prev => [...prev, data]);
+    };
+
+    socket.on('user-connected', handleUserConnected);
+    socket.on('user-disconnected', handleUserDisconnected);
+    socket.on('offer', handleOffer);
+    socket.on('answer', handleAnswer);
+    socket.on('ice-candidate', handleIceCandidate);
+    socket.on('receive-message', handleMessage);
+
+    return () => {
+      socket.off('user-connected', handleUserConnected);
+      socket.off('user-disconnected', handleUserDisconnected);
+      socket.off('offer', handleOffer);
+      socket.off('answer', handleAnswer);
+      socket.off('ice-candidate', handleIceCandidate);
+      socket.off('receive-message', handleMessage);
+    };
+  }, [socket, sendOffer, createPeerConnection, handleOfferReceived, handleAnswerReceived, handleIceCandidateReceived]);
+
+  // Join room when socket is ready
+  useEffect(() => {
+    if (socket && roomId) {
+      socket.emit('join-room', roomId, userName);
+    }
+  }, [socket, roomId, userName]);
 
   // Toggle audio
   const toggleAudio = () => {
