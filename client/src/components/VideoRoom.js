@@ -521,8 +521,12 @@ const VideoRoom = () => {
       console.log('Received remote stream from:', userId);
       const [remoteStream] = event.streams;
       setRemoteStreams(prev => new Map(prev).set(userId, remoteStream));
-      // Create audio analyzer for remote stream
-      createAudioAnalyzer(remoteStream, userId);
+      // Create audio analyzer for remote stream (with error handling)
+      try {
+        createAudioAnalyzer(remoteStream, userId);
+      } catch (error) {
+        console.error('Error creating audio analyzer in peer connection:', error);
+      }
     };
 
     // Handle ICE candidates
@@ -543,7 +547,7 @@ const VideoRoom = () => {
     };
 
     peerConnections.current.set(userId, peerConnection);
-  }, [localStream, socket, roomId, createAudioAnalyzer]);
+  }, [localStream, socket, roomId]);
 
   // Handle offer received
   const handleOfferReceived = useCallback(async (data) => {
@@ -573,7 +577,7 @@ const VideoRoom = () => {
     } catch (error) {
       console.error('Error handling offer:', error);
     }
-  }, [createPeerConnection, socket, roomId]);
+  }, [createPeerConnection, socket, roomId, createAudioAnalyzer]);
 
   // Handle answer received
   const handleAnswerReceived = useCallback(async (data) => {
@@ -642,8 +646,12 @@ const VideoRoom = () => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-        // Create audio analyzer for local stream
-        createAudioAnalyzer(stream, userName);
+        // Create audio analyzer for local stream (with error handling)
+        try {
+          createAudioAnalyzer(stream, userName);
+        } catch (error) {
+          console.error('Error creating audio analyzer for local stream:', error);
+        }
       } catch (error) {
         console.error('Error accessing media devices:', error);
         alert('Unable to access camera and microphone. Please check permissions.');
@@ -788,7 +796,7 @@ const VideoRoom = () => {
     return () => {
       socket.off('room-joined', handleRoomJoined);
     };
-  }, [socket, createPeerConnection, sendOffer, userName, createAudioAnalyzer]);
+  }, [socket, createPeerConnection, sendOffer, userName]);
 
 
   // Share room functionality
