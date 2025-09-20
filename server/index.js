@@ -12,8 +12,10 @@ const io = socketIo(server, {
     origin: process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site", "https://cmameet.onrender.com"] : "http://localhost:3000",
     methods: ["GET", "POST"]
   },
-  transports: ['websocket', 'polling'],
-  allowEIO3: true
+  transports: ['polling', 'websocket'],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 const PORT = process.env.PORT || 5001;

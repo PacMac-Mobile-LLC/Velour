@@ -477,9 +477,11 @@ const VideoRoom = () => {
     console.log('Connecting to socket:', socketUrl);
     
     const newSocket = io(socketUrl, {
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
       timeout: 20000,
-      forceNew: true
+      forceNew: true,
+      upgrade: false,
+      rememberUpgrade: false
     });
     
     newSocket.on('connect', () => {
@@ -494,6 +496,14 @@ const VideoRoom = () => {
     newSocket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
       console.error('Error details:', error.message, error.description, error.context);
+      
+      // If WebSocket fails, try polling only
+      if (error.message && error.message.includes('websocket')) {
+        console.log('WebSocket failed, attempting polling-only connection...');
+        newSocket.io.opts.transports = ['polling'];
+        newSocket.io.opts.upgrade = false;
+        newSocket.connect();
+      }
     });
     
     newSocket.on('reconnect', (attemptNumber) => {
