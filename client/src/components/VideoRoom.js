@@ -221,6 +221,7 @@ const VideoRoom = () => {
   const remoteVideoRefs = useRef(new Map());
   const peerConnections = useRef(new Map());
   const userName = searchParams.get('name') || 'Anonymous';
+  const [socketId, setSocketId] = useState(null);
 
   // Initialize socket connection
   useEffect(() => {
@@ -229,6 +230,12 @@ const VideoRoom = () => {
       : 'http://localhost:5001';
     const newSocket = io(socketUrl);
     setSocket(newSocket);
+    
+    // Store socket ID when connected
+    newSocket.on('connect', () => {
+      setSocketId(newSocket.id);
+      console.log('Socket connected with ID:', newSocket.id);
+    });
 
     return () => {
       newSocket.close();
@@ -264,6 +271,10 @@ const VideoRoom = () => {
       console.log('User connected:', userId);
       setParticipants(prev => prev + 1);
       createPeerConnection(userId);
+      // Send offer to the new user
+      setTimeout(() => {
+        sendOffer(userId);
+      }, 1000); // Small delay to ensure peer connection is established
     };
 
     const handleUserDisconnected = (userId) => {
@@ -299,12 +310,27 @@ const VideoRoom = () => {
       setMessages(prev => [...prev, data]);
     };
 
+    const handleExistingUsers = (existingUsers) => {
+      console.log('Existing users:', existingUsers);
+      const currentUserId = `${userName}-${socketId}`;
+      existingUsers.forEach(userId => {
+        if (userId !== currentUserId) { // Don't create connection to self
+          console.log('Creating peer connection to:', userId);
+          createPeerConnection(userId);
+          setTimeout(() => {
+            sendOffer(userId);
+          }, 1000);
+        }
+      });
+    };
+
     socket.on('user-connected', handleUserConnected);
     socket.on('user-disconnected', handleUserDisconnected);
     socket.on('offer', handleOffer);
     socket.on('answer', handleAnswer);
     socket.on('ice-candidate', handleIceCandidate);
     socket.on('receive-message', handleMessage);
+    socket.on('existing-users', handleExistingUsers);
 
     return () => {
       socket.off('user-connected', handleUserConnected);
@@ -313,18 +339,30 @@ const VideoRoom = () => {
       socket.off('answer', handleAnswer);
       socket.off('ice-candidate', handleIceCandidate);
       socket.off('receive-message', handleMessage);
+      socket.off('existing-users', handleExistingUsers);
     };
   }, [socket]);
 
   // Join room when socket is ready
   useEffect(() => {
-    if (socket && roomId) {
-      socket.emit('join-room', roomId, userName);
+    if (socket && roomId && socketId) {
+      const userId = `${userName}-${socketId}`;
+      console.log('Joining room with user ID:', userId);
+      socket.emit('join-room', roomId, userId);
     }
-  }, [socket, roomId, userName]);
+  }, [socket, roomId, userName, socketId]);
+
+  // Send offers to existing users when local stream is ready
+  useEffect(() => {
+    if (localStream && socket && roomId && socketId) {
+      // Get existing participants and send offers to them
+      socket.emit('get-existing-users', roomId);
+    }
+  }, [localStream, socket, roomId, socketId]);
 
   // Create peer connection
   const createPeerConnection = useCallback((userId) => {
+    console.log('Creating peer connection for user:', userId);
     const peerConnection = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -334,6 +372,7 @@ const VideoRoom = () => {
 
     // Add local stream tracks
     if (localStream) {
+      console.log('Adding local stream tracks to peer connection');
       localStream.getTracks().forEach(track => {
         peerConnection.addTrack(track, localStream);
       });
@@ -349,6 +388,7 @@ const VideoRoom = () => {
     // Handle ICE candidates
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
+        console.log('Sending ICE candidate to:', userId);
         socket.emit('ice-candidate', {
           candidate: event.candidate,
           roomId,
@@ -357,15 +397,22 @@ const VideoRoom = () => {
       }
     };
 
+    // Handle connection state changes
+    peerConnection.onconnectionstatechange = () => {
+      console.log('Peer connection state changed:', peerConnection.connectionState);
+    };
+
     peerConnections.current.set(userId, peerConnection);
   }, [localStream, socket, roomId]);
 
   // Handle offer received
   const handleOfferReceived = useCallback(async (data) => {
     const { offer, userId } = data;
+    console.log('Handling offer from:', userId);
     let peerConnection = peerConnections.current.get(userId);
     
     if (!peerConnection) {
+      console.log('Creating new peer connection for offer from:', userId);
       createPeerConnection(userId);
       peerConnection = peerConnections.current.get(userId);
     }
@@ -375,6 +422,7 @@ const VideoRoom = () => {
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
       
+      console.log('Sending answer to:', userId);
       socket.emit('answer', {
         answer,
         roomId,
@@ -388,14 +436,18 @@ const VideoRoom = () => {
   // Handle answer received
   const handleAnswerReceived = useCallback(async (data) => {
     const { answer, userId } = data;
+    console.log('Handling answer from:', userId);
     const peerConnection = peerConnections.current.get(userId);
     
     if (peerConnection) {
       try {
         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        console.log('Answer set successfully for:', userId);
       } catch (error) {
         console.error('Error handling answer:', error);
       }
+    } else {
+      console.error('No peer connection found for user:', userId);
     }
   }, []);
 
@@ -416,9 +468,13 @@ const VideoRoom = () => {
   // Send offer to new user
   const sendOffer = useCallback(async (userId) => {
     const peerConnection = peerConnections.current.get(userId);
-    if (!peerConnection) return;
+    if (!peerConnection) {
+      console.error('No peer connection found when trying to send offer to:', userId);
+      return;
+    }
 
     try {
+      console.log('Creating and sending offer to:', userId);
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
       
@@ -427,6 +483,7 @@ const VideoRoom = () => {
         roomId,
         userId
       });
+      console.log('Offer sent to:', userId);
     } catch (error) {
       console.error('Error sending offer:', error);
     }

@@ -79,14 +79,22 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).emit('user-connected', userId);
     
     // Add user to room
-    if (rooms.has(roomId)) {
-      rooms.get(roomId).participants.add(userId);
+    if (!rooms.has(roomId)) {
+      rooms.set(roomId, {
+        id: roomId,
+        participants: new Set(),
+        createdAt: new Date()
+      });
     }
+    rooms.get(roomId).participants.add(userId);
     
     console.log(`User ${userId} joined room ${roomId}`);
+    console.log(`Room ${roomId} now has ${rooms.get(roomId).participants.size} participants`);
+    
+    // Notify other users in the room about the new user
+    socket.to(roomId).emit('user-connected', userId);
   });
 
   socket.on('disconnect', () => {
@@ -112,6 +120,13 @@ io.on('connection', (socket) => {
     // Remove user from room
     if (rooms.has(roomId)) {
       rooms.get(roomId).participants.delete(userId);
+    }
+  });
+
+  socket.on('get-existing-users', (roomId) => {
+    if (rooms.has(roomId)) {
+      const existingUsers = Array.from(rooms.get(roomId).participants);
+      socket.emit('existing-users', existingUsers);
     }
   });
 });
