@@ -1,4 +1,10 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is provided
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+} else {
+  console.warn('⚠️  STRIPE_SECRET_KEY not provided - Stripe functionality will be disabled');
+}
 
 // Configure Cloudinary if URL is provided
 if (process.env.CLOUDINARY_URL) {
@@ -18,7 +24,7 @@ const stripeConfig = {
 };
 
 // Initialize Stripe with configuration
-const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY, stripeConfig);
+const stripeInstance = stripe;
 
 // Webhook endpoint secret
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
