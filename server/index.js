@@ -79,10 +79,17 @@ const paymentRoutes = require('./routes/payments');
 const contentRoutes = require('./routes/content');
 const messageRoutes = require('./routes/messages');
 
-// API Routes
-app.use('/api/auth', authRoutes);
+// Simple test endpoint to verify deployment
+app.get('/api/deployment-test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Deployment test successful!',
+    timestamp: new Date().toISOString(),
+    version: 'production-fix-v1'
+  });
+});
 
-// Production-ready registration endpoint directly in index.js
+// Production-ready registration endpoint directly in index.js (BEFORE auth routes)
 app.post('/api/auth/register', (req, res) => {
   try {
     console.log('🚀 Production registration attempt');
@@ -164,6 +171,9 @@ app.post('/api/auth/ultra-minimal', (req, res) => {
     });
   }
 });
+
+// API Routes (AFTER direct routes)
+app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/messages', messageRoutes);
