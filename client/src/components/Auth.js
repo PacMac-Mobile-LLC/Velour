@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const AuthContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,13 +14,14 @@ const AuthContainer = styled.div`
 `;
 
 const AuthCard = styled.div`
-  background: rgba(255, 255, 255, 0.95);
+  background: #1a1a1a;
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   max-width: 400px;
   width: 100%;
+  border: 1px solid #333;
 `;
 
 const AuthHeader = styled.div`
@@ -34,7 +35,7 @@ const Logo = styled.div`
   justify-content: center;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
   border-radius: 50%;
   margin-bottom: 20px;
   color: white;
@@ -43,19 +44,19 @@ const Logo = styled.div`
 const Title = styled.h1`
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: white;
   margin-bottom: 10px;
 `;
 
 const Subtitle = styled.p`
-  color: #666;
+  color: #ccc;
   font-size: 1rem;
 `;
 
 const TabContainer = styled.div`
   display: flex;
   margin-bottom: 30px;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(255, 107, 107, 0.1);
   border-radius: 12px;
   padding: 4px;
 `;
@@ -64,10 +65,10 @@ const Tab = styled.button`
   flex: 1;
   padding: 12px;
   border: none;
-  background: ${props => props.active ? 'white' : 'transparent'};
+  background: ${props => props.active ? '#ff6b6b' : 'transparent'};
   border-radius: 8px;
   font-weight: 600;
-  color: ${props => props.active ? '#667eea' : '#666'};
+  color: ${props => props.active ? 'white' : '#ccc'};
   cursor: pointer;
   transition: all 0.3s ease;
 `;
@@ -85,16 +86,17 @@ const InputGroup = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 15px 20px 15px 50px;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #333;
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
+  background: #2a2a2a;
+  color: white;
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
   }
 
   &::placeholder {
@@ -125,23 +127,24 @@ const PasswordToggle = styled.button`
 const Select = styled.select`
   width: 100%;
   padding: 15px 20px;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #333;
   border-radius: 12px;
   font-size: 1rem;
-  background: white;
+  background: #2a2a2a;
+  color: white;
   cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
   }
 `;
 
 const Button = styled.button`
   width: 100%;
   padding: 15px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -152,7 +155,7 @@ const Button = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
   }
 
   &:disabled {
