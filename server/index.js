@@ -74,7 +74,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const rooms = new Map();
 
 // Import routes
-const authRoutes = require('./routes/auth-minimal');
+const authRoutes = require('./routes/auth');
 const paymentRoutes = require('./routes/payments');
 const contentRoutes = require('./routes/content');
 const messageRoutes = require('./routes/messages');
