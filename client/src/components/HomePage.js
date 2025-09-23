@@ -13,14 +13,25 @@ const Container = styled.div`
 const HeroSection = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 20px 15px;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px 10px;
+  }
 `;
 
 const HeroBackground = styled.div`

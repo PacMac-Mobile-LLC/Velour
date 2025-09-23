@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { StripeProvider } from './contexts/StripeContext';
+import { initializePWA } from './utils/pwa';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import HomePage from './components/HomePage';
 import VideoRoom from './components/VideoRoom';
+import NotificationPrompt from './components/NotificationPrompt';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -59,6 +61,11 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  useEffect(() => {
+    // Initialize PWA functionality
+    initializePWA();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -119,6 +126,9 @@ function App() {
                   },
                 }}
               />
+              
+              {/* PWA Notification Prompt */}
+              <NotificationPrompt />
             </div>
           </Router>
         </StripeProvider>
