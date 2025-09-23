@@ -27,6 +27,47 @@ router.post('/test-register', (req, res) => {
   });
 });
 
+// Minimal registration endpoint without validation or User model
+router.post('/simple-register', (req, res) => {
+  try {
+    console.log('🔍 Simple registration attempt started');
+    console.log('📝 Request body:', req.body);
+    
+    const { username, email, password, displayName, role = 'subscriber' } = req.body;
+    
+    if (!username || !email || !password || !displayName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
+    
+    console.log('✅ All required fields present');
+    
+    // Generate a simple token without JWT
+    const token = 'simple-token-' + Date.now();
+    
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully (simple)',
+      token,
+      user: {
+        username,
+        email,
+        displayName,
+        role
+      }
+    });
+  } catch (error) {
+    console.error('❌ Simple registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Simple registration failed',
+      error: error.message
+    });
+  }
+});
+
 // Generate JWT token
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
