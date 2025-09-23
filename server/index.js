@@ -13,7 +13,13 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site", "https://cmameet.onrender.com"] : "http://localhost:3000",
+    origin: process.env.NODE_ENV === 'production' ? [
+      "https://www.cmameet.site", 
+      "https://cmameet.site", 
+      "https://cmameet.onrender.com",
+      "https://videochat-wv3g.onrender.com",
+      process.env.FRONTEND_URL
+    ].filter(Boolean) : "http://localhost:3000",
     methods: ["GET", "POST"]
   },
   transports: ['polling', 'websocket'],
@@ -57,7 +63,13 @@ app.use('/api/', limiter);
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ["https://www.cmameet.site", "https://cmameet.site", "https://cmameet.onrender.com"] 
+    ? [
+        "https://www.cmameet.site", 
+        "https://cmameet.site", 
+        "https://cmameet.onrender.com",
+        "https://videochat-wv3g.onrender.com",
+        process.env.FRONTEND_URL
+      ].filter(Boolean)
     : "http://localhost:3000",
   credentials: true
 }));
@@ -510,5 +522,11 @@ app.get('*', (req, res) => {
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📡 Socket.IO server initialized`);
-  console.log(`🌐 CORS configured for:`, process.env.NODE_ENV === 'production' ? ["https://www.cmameet.site", "https://cmameet.site"] : "http://localhost:3000");
+  console.log(`🌐 CORS configured for:`, process.env.NODE_ENV === 'production' ? [
+    "https://www.cmameet.site", 
+    "https://cmameet.site", 
+    "https://cmameet.onrender.com",
+    "https://videochat-wv3g.onrender.com",
+    process.env.FRONTEND_URL
+  ].filter(Boolean) : "http://localhost:3000");
 });
