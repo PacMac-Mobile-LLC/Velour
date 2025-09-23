@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone, Video, MessageSquare, Star, Play, Eye, Lock, Crown, Zap, Shield, Globe } from 'lucide-react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import Logo from './Logo';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -500,7 +501,7 @@ const HomePage = () => {
       <HeroSection>
         <HeroBackground />
         <HeroContent>
-          <HeroTitle>Velour</HeroTitle>
+          <Logo size="large" showTagline={true} />
           <HeroSubtitle>
             The ultimate platform for creators to share exclusive content and connect with their fans. 
             Join thousands of creators earning from their passion.
