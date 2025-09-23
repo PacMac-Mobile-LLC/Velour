@@ -3,8 +3,8 @@ services:
     name: subspace-backend
     env: node
     plan: free
-    buildCommand: npm run render-postbuild
-    startCommand: npm start
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
     envVars:
       - key: NODE_ENV
         value: production
