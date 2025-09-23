@@ -12,7 +12,8 @@
     "start": "cd server && npm start",
     "heroku-postbuild": "npm run build",
     "render-postbuild": "cd server && npm install",
-    "postinstall": "cd server && npm install"
+    "postinstall": "cd server && npm install",
+    "keep-alive": "node keep-alive.js"
   },
   "keywords": [
     "video",
