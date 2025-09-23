@@ -47,9 +47,13 @@ router.post('/register', [
     .withMessage('Role must be either creator or subscriber')
 ], async (req, res) => {
   try {
+    console.log('🔍 Registration attempt started');
+    console.log('📝 Request body:', req.body);
+    
     // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('❌ Validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
@@ -58,19 +62,23 @@ router.post('/register', [
     }
 
     const { username, email, password, displayName, role = 'subscriber' } = req.body;
+    console.log('✅ Validation passed, extracted data:', { username, email, role, displayName });
 
     // Check if user already exists
+    console.log('🔍 Checking for existing user...');
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     });
 
     if (existingUser) {
+      console.log('❌ User already exists:', existingUser.username);
       return res.status(400).json({
         success: false,
         message: 'User with this email or username already exists'
       });
     }
 
+    console.log('✅ No existing user found, creating new user...');
     // Create new user
     const user = new User({
       username,
@@ -82,7 +90,9 @@ router.post('/register', [
       }
     });
 
+    console.log('💾 Saving user to database...');
     await user.save();
+    console.log('✅ User saved successfully:', user._id);
 
     // Generate token
     const token = generateToken(user._id);
