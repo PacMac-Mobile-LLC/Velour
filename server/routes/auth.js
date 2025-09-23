@@ -5,6 +5,15 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { authenticateToken, authRateLimit } = require('../middleware/auth');
 
+// Test endpoint to check if auth route is working
+router.get('/test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Auth route is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Generate JWT token
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
