@@ -7,7 +7,11 @@ const { authenticateToken, authRateLimit } = require('../middleware/auth');
 
 // Generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const secret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
+  if (!process.env.JWT_SECRET) {
+    console.warn('⚠️  JWT_SECRET not set, using fallback key');
+  }
+  return jwt.sign({ userId }, secret, { expiresIn: '7d' });
 };
 
 // Register new user
@@ -82,9 +86,15 @@ router.post('/register', [
     });
   } catch (error) {
     console.error('Registration error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.status(500).json({
       success: false,
-      message: 'Registration failed'
+      message: 'Registration failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
