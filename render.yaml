@@ -1,9 +1,48 @@
 services:
   - type: web
-    name: zoom-clone
+    name: subspace-backend
     env: node
-    buildCommand: ./build.sh
-    startCommand: node index.js
+    plan: free
+    buildCommand: npm run render-postbuild
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: subspace-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://subspace-frontend.onrender.com
+
+  - type: web
+    name: subspace-frontend
+    env: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/build
+    envVars:
+      - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: REACT_APP_API_URL
+        value: https://subspace-backend.onrender.com
+
+databases:
+  - name: subspace-db
+    databaseName: subspace
+    user: subspace_user

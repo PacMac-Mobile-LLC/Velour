@@ -11,18 +11,26 @@
     "build": "npm run install-all && cd client && npm run build",
     "start": "cd server && npm start",
     "heroku-postbuild": "npm run build",
-    "render-postbuild": "npm run build"
+    "render-postbuild": "cd server && npm install",
+    "postinstall": "cd server && npm install"
   },
-  "keywords": ["video", "conferencing", "zoom", "webrtc", "socket.io"],
+  "keywords": [
+    "video",
+    "conferencing",
+    "zoom",
+    "webrtc",
+    "socket.io"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "cloudinary": "^2.7.0",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.2",
-    "cors": "^2.8.5",
     "uuid": "^9.0.0"
   }
 }
