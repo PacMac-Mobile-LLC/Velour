@@ -81,6 +81,28 @@ const messageRoutes = require('./routes/messages');
 
 // API Routes
 app.use('/api/auth', authRoutes);
+
+// Ultra-minimal test route directly in index.js
+app.post('/api/auth/ultra-minimal', (req, res) => {
+  try {
+    console.log('🚀 Ultra minimal registration attempt');
+    console.log('📝 Request body:', req.body);
+    
+    res.status(201).json({
+      success: true,
+      message: 'Ultra minimal registration working!',
+      timestamp: new Date().toISOString(),
+      receivedData: req.body
+    });
+  } catch (error) {
+    console.error('❌ Ultra minimal error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ultra minimal failed',
+      error: error.message
+    });
+  }
+});
 app.use('/api/payments', paymentRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/messages', messageRoutes);
