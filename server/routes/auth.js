@@ -14,6 +14,19 @@ router.get('/test', (req, res) => {
   });
 });
 
+// Simple test registration endpoint without User model
+router.post('/test-register', (req, res) => {
+  console.log('🧪 Test registration endpoint called');
+  console.log('📝 Request body:', req.body);
+  
+  res.json({
+    success: true,
+    message: 'Test registration endpoint working',
+    receivedData: req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Generate JWT token
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
