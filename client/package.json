@@ -1,5 +1,5 @@
 {
-  "name": "zoom-clone-client",
+  "name": "subscription-platform-client",
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
@@ -14,7 +14,16 @@
     "socket.io-client": "^4.5.1",
     "styled-components": "^5.3.5",
     "lucide-react": "^0.263.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@stripe/stripe-js": "^2.4.0",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "axios": "^1.6.0",
+    "react-dropzone": "^14.2.3",
+    "react-player": "^2.13.0",
+    "react-query": "^3.39.3",
+    "react-hook-form": "^7.47.0",
+    "react-hot-toast": "^2.4.1",
+    "date-fns": "^2.30.0"
   },
   "scripts": {
     "start": "react-scripts start",

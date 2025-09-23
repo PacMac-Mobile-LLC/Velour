@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone } from 'lucide-react';
+import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone, Video, MessageSquare, Star } from 'lucide-react';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -333,6 +334,7 @@ const HomePage = () => {
   const [roomId, setRoomId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   const [currentQuote, setCurrentQuote] = useState(quotes[0]);
 
@@ -421,100 +423,95 @@ const HomePage = () => {
   return (
     <Container>
       <PageHeader>
-        <HeaderTitle>CMA Virtual Meetings</HeaderTitle>
-        <HeaderSubtitle>Supporting recovery through connection</HeaderSubtitle>
+        <HeaderTitle>SubSpace</HeaderTitle>
+        <HeaderSubtitle>Connect with creators, share exclusive content, and build meaningful relationships</HeaderSubtitle>
         
         <ResourceLinks>
-          <ResourceLink href="https://www.crystalmeth.org/" target="_blank" rel="noopener noreferrer">
-            <ExternalLink size={16} />
-            CMA Official Site
+          <ResourceLink href="#features" onClick={(e) => e.preventDefault()}>
+            <Video size={16} />
+            Features
           </ResourceLink>
-          <ResourceLink href="https://www.crystalmeth.org/cma-meeting-directory/" target="_blank" rel="noopener noreferrer">
-            <Calendar size={16} />
-            Meeting Directory
-          </ResourceLink>
-          <ResourceLink href="https://www.crystalmeth.org/to-the-public/what-is-crystal-meth-anonymous/" target="_blank" rel="noopener noreferrer">
+          <ResourceLink href="#creators" onClick={(e) => e.preventDefault()}>
             <Users size={16} />
-            About CMA
+            Top Creators
+          </ResourceLink>
+          <ResourceLink href="#pricing" onClick={(e) => e.preventDefault()}>
+            <DollarSign size={16} />
+            Pricing
           </ResourceLink>
         </ResourceLinks>
 
         <QuoteSection>
-          <Quote>"{currentQuote.text}"</Quote>
-          <QuoteAuthor>— {currentQuote.author}</QuoteAuthor>
+          <Quote>"Join thousands of creators and subscribers building meaningful connections through exclusive content and direct messaging."</Quote>
+          <QuoteAuthor>— SubSpace Community</QuoteAuthor>
         </QuoteSection>
 
-        <DonationSection>
-          <DonationText>
-            "Every CMA group ought to be fully self-supporting, declining outside contributions." 
-            However, we are fully self-supporting and do accept donations to help maintain this virtual meeting platform.
-          </DonationText>
-          <DonationButton 
-            href="https://www.venmo.com/u/PackieMobile" 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            <DollarSign size={16} />
-            Support CMA Virtual Meetings
-          </DonationButton>
-        </DonationSection>
+        {!isAuthenticated && (
+          <DonationSection>
+            <DonationText>
+              Ready to start your journey? Join as a creator to share your content or as a subscriber to access exclusive experiences.
+            </DonationText>
+            <DonationButton 
+              onClick={() => navigate('/auth')}
+            >
+              <Heart size={16} />
+              Get Started Today
+            </DonationButton>
+          </DonationSection>
+        )}
       </PageHeader>
 
-      <Card>
-        <Header>
-          <Icon>
-            <Heart size={30} />
-          </Icon>
-          <Title>Join a Virtual Meeting</Title>
-          <Subtitle>Connect with your CMA fellowship online</Subtitle>
-        </Header>
-
-        <Form onSubmit={handleCreateRoom}>
-          <InputGroup>
-            <Label>Your Name (First Name Only)</Label>
-            <Input
-              type="text"
-              placeholder="Enter your first name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <Label>Meeting ID (if joining existing meeting)</Label>
-            <Input
-              type="text"
-              placeholder="Enter meeting ID to join existing meeting"
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-            />
-          </InputGroup>
+      {isAuthenticated ? (
+        <Card>
+          <Header>
+            <Icon>
+              <Heart size={30} />
+            </Icon>
+            <Title>Welcome back, {user?.profile?.displayName || user?.username}!</Title>
+            <Subtitle>Ready to continue your journey?</Subtitle>
+          </Header>
+          
+          <ButtonGroup>
+            <CreateButton onClick={() => navigate('/dashboard')}>
+              <ArrowRight size={20} />
+              Go to Dashboard
+            </CreateButton>
+          </ButtonGroup>
+        </Card>
+      ) : (
+        <Card>
+          <Header>
+            <Icon>
+              <Heart size={30} />
+            </Icon>
+            <Title>Join SubSpace</Title>
+            <Subtitle>Connect with creators and access exclusive content</Subtitle>
+          </Header>
 
           <ButtonGroup>
-            <CreateButton type="submit" disabled={isLoading}>
+            <CreateButton onClick={() => navigate('/auth')}>
               <Plus size={20} />
-              Start Meeting
+              Sign Up
             </CreateButton>
-            <JoinButton type="button" onClick={handleJoinRoom} disabled={isLoading}>
+            <JoinButton onClick={() => navigate('/auth')}>
               <ArrowRight size={20} />
-              Join Meeting
+              Sign In
             </JoinButton>
           </ButtonGroup>
-        </Form>
-      </Card>
+        </Card>
+      )}
 
       <Footer>
         <HelplineSection>
-          <HelplineText>Call the CMA Helpline at:</HelplineText>
+          <HelplineText>Need help? Contact our support team:</HelplineText>
           <PhoneNumbers>
-            <PhoneLink href="tel:+18556384373">
-              <Phone size={16} />
-              (855) METH-FREE
+            <PhoneLink href="mailto:support@subspace.com">
+              <MessageSquare size={16} />
+              support@subspace.com
             </PhoneLink>
-            <PhoneLink href="tel:+18556384373">
+            <PhoneLink href="tel:+1234567890">
               <Phone size={16} />
-              (855) 638-4373
+              (123) 456-7890
             </PhoneLink>
           </PhoneNumbers>
         </HelplineSection>
