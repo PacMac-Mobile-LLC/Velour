@@ -44,11 +44,11 @@ const HeroTitle = styled.h1`
   font-size: 4rem;
   font-weight: 800;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #6bcf7f 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+  text-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
   
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -78,7 +78,7 @@ const CTAButtons = styled.div`
 `;
 
 const PrimaryButton = styled.button`
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   color: white;
   border: none;
   padding: 18px 36px;
@@ -90,18 +90,18 @@ const PrimaryButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4);
   }
 `;
 
 const SecondaryButton = styled.button`
   background: transparent;
   color: white;
-  border: 2px solid #ff6b6b;
+  border: 2px solid #ff69b4;
   padding: 16px 34px;
   border-radius: 50px;
   font-size: 1.1rem;
@@ -113,7 +113,7 @@ const SecondaryButton = styled.button`
   gap: 10px;
 
   &:hover {
-    background: #ff6b6b;
+    background: #ff69b4;
     transform: translateY(-3px);
   }
 `;
@@ -133,7 +133,7 @@ const StatItem = styled.div`
 const StatNumber = styled.div`
   font-size: 2.5rem;
   font-weight: 800;
-  color: #ff6b6b;
+  color: #ff69b4;
   margin-bottom: 10px;
 `;
 
@@ -159,7 +159,7 @@ const SectionTitle = styled.h2`
   font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -192,8 +192,8 @@ const FeatureCard = styled.div`
 
   &:hover {
     transform: translateY(-10px);
-    border-color: #ff6b6b;
-    box-shadow: 0 20px 40px rgba(255, 107, 107, 0.1);
+    border-color: #ff69b4;
+    box-shadow: 0 20px 40px rgba(255, 105, 180, 0.1);
   }
 `;
 
@@ -201,7 +201,7 @@ const FeatureIcon = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -243,14 +243,14 @@ const CreatorCard = styled.div`
 
   &:hover {
     transform: translateY(-5px);
-    border-color: #ff6b6b;
+    border-color: #ff69b4;
   }
 `;
 
 const CreatorImage = styled.div`
   width: 100%;
   height: 200px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,7 +279,7 @@ const CreatorStats = styled.div`
 
 const SubscribeButton = styled.button`
   width: 100%;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   color: white;
   border: none;
   padding: 12px;
@@ -290,7 +290,7 @@ const SubscribeButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
   }
 `;
 
@@ -312,13 +312,13 @@ const PricingCard = styled.div`
   border-radius: 20px;
   padding: 40px;
   text-align: center;
-  border: 2px solid ${props => props.featured ? '#ff6b6b' : '#333'};
+  border: 2px solid ${props => props.featured ? '#ff69b4' : '#333'};
   position: relative;
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-10px);
-    border-color: #ff6b6b;
+    border-color: #ff69b4;
   }
 `;
 
@@ -327,7 +327,7 @@ const PricingBadge = styled.div`
   top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   color: white;
   padding: 8px 20px;
   border-radius: 20px;
@@ -345,7 +345,7 @@ const PricingTitle = styled.h3`
 const PricingPrice = styled.div`
   font-size: 3rem;
   font-weight: 800;
-  color: #ff6b6b;
+  color: #ff69b4;
   margin-bottom: 20px;
 `;
 
@@ -389,7 +389,7 @@ const FooterLink = styled.a`
   transition: color 0.3s ease;
 
   &:hover {
-    color: #ff6b6b;
+    color: #ff69b4;
   }
 `;
 
@@ -592,7 +592,7 @@ const HomePage = () => {
                 <PricingFeatures>
                   {plan.features.map((feature, featureIndex) => (
                     <PricingFeature key={featureIndex}>
-                      <Star size={16} color="#ff6b6b" />
+                      <Star size={16} color="#ff69b4" />
                       {feature}
                     </PricingFeature>
                   ))}

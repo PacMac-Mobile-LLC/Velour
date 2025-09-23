@@ -35,7 +35,7 @@ const Logo = styled.div`
   justify-content: center;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   border-radius: 50%;
   margin-bottom: 20px;
   color: white;
@@ -56,7 +56,7 @@ const Subtitle = styled.p`
 const TabContainer = styled.div`
   display: flex;
   margin-bottom: 30px;
-  background: rgba(255, 107, 107, 0.1);
+  background: rgba(255, 105, 180, 0.1);
   border-radius: 12px;
   padding: 4px;
 `;
@@ -65,7 +65,7 @@ const Tab = styled.button`
   flex: 1;
   padding: 12px;
   border: none;
-  background: ${props => props.active ? '#ff6b6b' : 'transparent'};
+  background: ${props => props.active ? '#ff69b4' : 'transparent'};
   border-radius: 8px;
   font-weight: 600;
   color: ${props => props.active ? 'white' : '#ccc'};
@@ -95,8 +95,8 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b6b;
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
   }
 
   &::placeholder {
@@ -136,15 +136,15 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #ff6b6b;
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
   }
 `;
 
 const Button = styled.button`
   width: 100%;
   padding: 15px 20px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -155,7 +155,7 @@ const Button = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
   }
 
   &:disabled {
