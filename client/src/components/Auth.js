@@ -248,7 +248,7 @@ const Auth = () => {
           <Logo>
             <Heart size={30} />
           </Logo>
-          <Title>Welcome to SubSpace</Title>
+          <Title>Welcome to Velour</Title>
           <Subtitle>
             {isLogin ? 'Sign in to your account' : 'Create your account'}
           </Subtitle>

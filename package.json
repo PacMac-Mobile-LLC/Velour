@@ -1,7 +1,7 @@
 {
-  "name": "zoom-clone",
+  "name": "velour-platform",
   "version": "1.0.0",
-  "description": "A free clone of Zoom for video conferencing",
+  "description": "Velour - Premium subscription video sharing and messaging platform",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",

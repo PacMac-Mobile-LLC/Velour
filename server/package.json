@@ -1,7 +1,7 @@
 {
-  "name": "subscription-platform-server",
+  "name": "velour-server",
   "version": "1.0.0",
-  "description": "Backend server for subscription video platform",
+  "description": "Backend server for Velour subscription platform",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

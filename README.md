@@ -1,4 +1,4 @@
-# SubSpace - Subscription Video Platform
+# Velour - Premium Subscription Platform
 
 A modern subscription-based video sharing and messaging platform built with React, Node.js, and Stripe integration.
 
@@ -86,7 +86,7 @@ NODE_ENV=development
 PORT=5001
 
 # Database
-MONGODB_URI=mongodb://localhost:27017/subscription-platform
+MONGODB_URI=mongodb://localhost:27017/velour
 
 # JWT Secret
 JWT_SECRET=your-super-secret-jwt-key-here

@@ -423,7 +423,7 @@ const HomePage = () => {
   return (
     <Container>
       <PageHeader>
-        <HeaderTitle>SubSpace</HeaderTitle>
+        <HeaderTitle>Velour</HeaderTitle>
         <HeaderSubtitle>Connect with creators, share exclusive content, and build meaningful relationships</HeaderSubtitle>
         
         <ResourceLinks>
@@ -443,7 +443,7 @@ const HomePage = () => {
 
         <QuoteSection>
           <Quote>"Join thousands of creators and subscribers building meaningful connections through exclusive content and direct messaging."</Quote>
-          <QuoteAuthor>— SubSpace Community</QuoteAuthor>
+          <QuoteAuthor>— Velour Community</QuoteAuthor>
         </QuoteSection>
 
         {!isAuthenticated && (
@@ -484,7 +484,7 @@ const HomePage = () => {
             <Icon>
               <Heart size={30} />
             </Icon>
-            <Title>Join SubSpace</Title>
+            <Title>Join Velour</Title>
             <Subtitle>Connect with creators and access exclusive content</Subtitle>
           </Header>
 
@@ -502,12 +502,12 @@ const HomePage = () => {
       )}
 
       <Footer>
-        <HelplineSection>
+          <HelplineSection>
           <HelplineText>Need help? Contact our support team:</HelplineText>
           <PhoneNumbers>
-            <PhoneLink href="mailto:support@subspace.com">
+            <PhoneLink href="mailto:support@velour.com">
               <MessageSquare size={16} />
-              support@subspace.com
+              support@velour.com
             </PhoneLink>
             <PhoneLink href="tel:+1234567890">
               <Phone size={16} />

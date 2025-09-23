@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: subspace-backend
+    name: velour-backend
     env: node
     plan: free
     buildCommand: cd server && npm install
@@ -29,10 +29,10 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://subspace-frontend.onrender.com
+        value: https://velour-frontend.onrender.com
 
   - type: web
-    name: subspace-frontend
+    name: velour-frontend
     env: static
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: ./client/build
@@ -40,9 +40,9 @@ services:
       - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
         sync: false
       - key: REACT_APP_API_URL
-        value: https://subspace-backend.onrender.com
+        value: https://velour-backend.onrender.com
 
 databases:
-  - name: subspace-db
-    databaseName: subspace
-    user: subspace_user
+  - name: velour-db
+    databaseName: velour
+    user: velour_user

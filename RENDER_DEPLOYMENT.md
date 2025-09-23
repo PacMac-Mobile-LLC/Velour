@@ -1,6 +1,6 @@
-# Render Deployment Guide for SubSpace
+# Render Deployment Guide for Velour
 
-This guide will help you deploy your SubSpace subscription platform to Render.
+This guide will help you deploy your Velour subscription platform to Render.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ This guide will help you deploy your SubSpace subscription platform to Render.
 4. Configure the service:
 
 **Basic Settings:**
-- **Name**: `subspace-backend`
+- **Name**: `velour-backend`
 - **Environment**: `Node`
 - **Region**: Choose closest to your users
 - **Branch**: `main`
@@ -50,7 +50,7 @@ Add these environment variables in the Render dashboard:
 ```env
 NODE_ENV=production
 PORT=10000
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/subspace?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/velour?retryWrites=true&w=majority
 JWT_SECRET=your-super-secret-jwt-key-here-make-it-long-and-random
 STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key_here
 STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key_here
@@ -58,13 +58,13 @@ STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-FRONTEND_URL=https://subspace-frontend.onrender.com
+FRONTEND_URL=https://velour-frontend.onrender.com
 ```
 
 ### 2.3 Deploy Backend
 1. Click "Create Web Service"
 2. Wait for deployment to complete
-3. Note your backend URL (e.g., `https://subspace-backend.onrender.com`)
+3. Note your backend URL (e.g., `https://velour-backend.onrender.com`)
 
 ## Step 3: Deploy Frontend Service
 
@@ -75,7 +75,7 @@ FRONTEND_URL=https://subspace-frontend.onrender.com
 4. Configure the service:
 
 **Basic Settings:**
-- **Name**: `subspace-frontend`
+- **Name**: `velour-frontend`
 - **Root Directory**: `client`
 - **Build Command**: `npm install && npm run build`
 - **Publish Directory**: `build`
@@ -85,20 +85,20 @@ Add these environment variables:
 
 ```env
 REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key_here
-REACT_APP_API_URL=https://subspace-backend.onrender.com
+REACT_APP_API_URL=https://velour-backend.onrender.com
 ```
 
 ### 3.3 Deploy Frontend
 1. Click "Create Static Site"
 2. Wait for deployment to complete
-3. Note your frontend URL (e.g., `https://subspace-frontend.onrender.com`)
+3. Note your frontend URL (e.g., `https://velour-frontend.onrender.com`)
 
 ## Step 4: Configure Stripe Webhooks
 
 ### 4.1 Add Webhook Endpoint
 1. Go to [Stripe Dashboard](https://dashboard.stripe.com/webhooks)
 2. Click "Add endpoint"
-3. **Endpoint URL**: `https://subspace-backend.onrender.com/api/webhooks/stripe`
+3. **Endpoint URL**: `https://velour-backend.onrender.com/api/webhooks/stripe`
 4. **Events to send**:
    - `customer.subscription.created`
    - `customer.subscription.updated`
