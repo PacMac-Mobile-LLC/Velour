@@ -7,6 +7,14 @@ const LogoContainer = styled.div`
   align-items: center;
   text-align: center;
   gap: ${props => props.size === 'large' ? '16px' : props.size === 'medium' ? '12px' : '8px'};
+  
+  @media (max-width: 768px) {
+    gap: ${props => props.size === 'large' ? '12px' : props.size === 'medium' ? '10px' : '6px'};
+  }
+  
+  @media (max-width: 480px) {
+    gap: ${props => props.size === 'large' ? '10px' : props.size === 'medium' ? '8px' : '6px'};
+  }
 `;
 
 const LogoIcon = styled.div`
@@ -19,11 +27,33 @@ const LogoIcon = styled.div`
   justify-content: center;
   position: relative;
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    width: ${props => props.size === 'large' ? '60px' : props.size === 'medium' ? '50px' : '35px'};
+    height: ${props => props.size === 'large' ? '60px' : props.size === 'medium' ? '50px' : '35px'};
+    border-radius: ${props => props.size === 'large' ? '15px' : props.size === 'medium' ? '12px' : '8px'};
+  }
+  
+  @media (max-width: 480px) {
+    width: ${props => props.size === 'large' ? '50px' : props.size === 'medium' ? '45px' : '30px'};
+    height: ${props => props.size === 'large' ? '50px' : props.size === 'medium' ? '45px' : '30px'};
+    border-radius: ${props => props.size === 'large' ? '12px' : props.size === 'medium' ? '10px' : '6px'};
+  }
 `;
 
 const VLetter = styled.svg`
   width: ${props => props.size === 'large' ? '50px' : props.size === 'medium' ? '38px' : '25px'};
   height: ${props => props.size === 'large' ? '50px' : props.size === 'medium' ? '38px' : '25px'};
+  
+  @media (max-width: 768px) {
+    width: ${props => props.size === 'large' ? '38px' : props.size === 'medium' ? '30px' : '20px'};
+    height: ${props => props.size === 'large' ? '38px' : props.size === 'medium' ? '30px' : '20px'};
+  }
+  
+  @media (max-width: 480px) {
+    width: ${props => props.size === 'large' ? '30px' : props.size === 'medium' ? '25px' : '18px'};
+    height: ${props => props.size === 'large' ? '30px' : props.size === 'medium' ? '25px' : '18px'};
+  }
 `;
 
 const LogoText = styled.h1`
@@ -33,6 +63,16 @@ const LogoText = styled.h1`
   margin: 0;
   letter-spacing: 2px;
   font-family: 'Georgia', 'Times New Roman', serif;
+  
+  @media (max-width: 768px) {
+    font-size: ${props => props.size === 'large' ? '2rem' : props.size === 'medium' ? '1.5rem' : '1.2rem'};
+    letter-spacing: 1px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: ${props => props.size === 'large' ? '1.5rem' : props.size === 'medium' ? '1.2rem' : '1rem'};
+    letter-spacing: 1px;
+  }
 `;
 
 const Tagline = styled.p`
@@ -42,6 +82,20 @@ const Tagline = styled.p`
   font-weight: 400;
   letter-spacing: 1px;
   opacity: 0.8;
+  line-height: 1.3;
+  
+  @media (max-width: 768px) {
+    font-size: ${props => props.size === 'large' ? '0.9rem' : props.size === 'medium' ? '0.8rem' : '0.7rem'};
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: ${props => props.size === 'large' ? '0.8rem' : props.size === 'medium' ? '0.7rem' : '0.6rem'};
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    padding: 0 10px;
+  }
 `;
 
 const Logo = ({ size = 'medium', showTagline = true, className }) => {

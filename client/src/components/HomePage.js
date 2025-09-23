@@ -77,7 +77,17 @@ const HeroSubtitle = styled.p`
   line-height: 1.6;
   
   @media (max-width: 768px) {
-  font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    padding: 0 20px;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    margin-bottom: 25px;
+    padding: 0 15px;
+    line-height: 1.4;
   }
 `;
 
@@ -87,6 +97,20 @@ const CTAButtons = styled.div`
   justify-content: center;
   margin-bottom: 60px;
   flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 0 15px;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const PrimaryButton = styled.button`
@@ -103,10 +127,26 @@ const PrimaryButton = styled.button`
   align-items: center;
   gap: 10px;
   box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+  min-height: 56px;
+  min-width: 200px;
 
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 16px 32px;
+    font-size: 1rem;
+    min-width: 180px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    min-width: 160px;
+    width: 100%;
+    max-width: 280px;
   }
 `;
 
@@ -123,10 +163,26 @@ const SecondaryButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 56px;
+  min-width: 200px;
 
   &:hover {
     background: #ff69b4;
     transform: translateY(-3px);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 14px 30px;
+    font-size: 1rem;
+    min-width: 180px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px 26px;
+    font-size: 0.95rem;
+    min-width: 160px;
+    width: 100%;
+    max-width: 280px;
   }
 `;
 
@@ -136,6 +192,17 @@ const StatsSection = styled.div`
   gap: 40px;
   max-width: 800px;
   margin: 0 auto;
+  
+  @media (max-width: 768px) {
+    gap: 30px;
+    padding: 0 20px;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 0 15px;
+  }
 `;
 
 const StatItem = styled.div`
@@ -147,6 +214,14 @@ const StatNumber = styled.div`
   font-weight: 800;
   color: #ff69b4;
   margin-bottom: 10px;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.8rem;
+  }
 `;
 
 const StatLabel = styled.div`
@@ -154,6 +229,15 @@ const StatLabel = styled.div`
   color: #ccc;
   text-transform: uppercase;
   letter-spacing: 1px;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const FeaturesSection = styled.div`
