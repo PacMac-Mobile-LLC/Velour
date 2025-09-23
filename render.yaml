@@ -12,7 +12,7 @@ services:
         value: 10000
       - key: MONGODB_URI
         fromDatabase:
-          name: subspace-db
+          name: velour-db
           property: connectionString
       - key: JWT_SECRET
         generateValue: true

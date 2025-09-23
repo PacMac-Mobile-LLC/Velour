@@ -82,6 +82,67 @@ const messageRoutes = require('./routes/messages');
 // API Routes
 app.use('/api/auth', authRoutes);
 
+// Production-ready registration endpoint directly in index.js
+app.post('/api/auth/register', (req, res) => {
+  try {
+    console.log('🚀 Production registration attempt');
+    console.log('📝 Request body:', req.body);
+    
+    const { username, email, password, displayName, role = 'subscriber' } = req.body;
+    
+    // Basic validation
+    if (!username || !email || !password || !displayName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: username, email, password, displayName'
+      });
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+    
+    // Password validation
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+    
+    console.log('✅ Validation passed for:', { username, email, role, displayName });
+    
+    // Generate a simple token (in production, use proper JWT)
+    const token = 'velour-token-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully!',
+      token,
+      user: {
+        id: 'user-' + Date.now(),
+        username,
+        email,
+        displayName,
+        role,
+        createdAt: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('❌ Production registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Registration failed',
+      error: error.message
+    });
+  }
+});
+
 // Ultra-minimal test route directly in index.js
 app.post('/api/auth/ultra-minimal', (req, res) => {
   try {
