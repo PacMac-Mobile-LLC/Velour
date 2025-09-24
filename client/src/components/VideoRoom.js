@@ -436,7 +436,10 @@ const VideoRoom = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
-  console.log('VideoRoom component rendering, roomId:', roomId);
+  // Check if this is a voice-only call
+  const isVoiceOnly = searchParams.get('mode') === 'voice';
+  
+  console.log('VideoRoom component rendering, roomId:', roomId, 'voiceOnly:', isVoiceOnly);
   
   const [socket, setSocket] = useState(null);
   const [localStream, setLocalStream] = useState(null);
@@ -786,12 +789,21 @@ const VideoRoom = () => {
     const initLocalStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: !isVoiceOnly, // Disable video for voice-only calls
           audio: true
         });
         setLocalStream(stream);
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
+        }
+        
+        // For voice-only calls, mute video by default
+        if (isVoiceOnly) {
+          setIsVideoMuted(true);
+          const videoTrack = stream.getVideoTracks()[0];
+          if (videoTrack) {
+            videoTrack.enabled = false;
+          }
         }
         // Create audio analyzer for local stream (with error handling)
         try {
@@ -1270,21 +1282,25 @@ const VideoRoom = () => {
           {isAudioMuted ? <MicOff size={20} /> : <Mic size={20} />}
         </ControlButton>
 
-        <ControlButton
-          onClick={toggleVideo}
-          active={!isVideoMuted}
-          title={isVideoMuted ? 'Turn on camera' : 'Turn off camera'}
-        >
-          {isVideoMuted ? <VideoOff size={20} /> : <Video size={20} />}
-        </ControlButton>
+        {!isVoiceOnly && (
+          <ControlButton
+            onClick={toggleVideo}
+            active={!isVideoMuted}
+            title={isVideoMuted ? 'Turn on camera' : 'Turn off camera'}
+          >
+            {isVideoMuted ? <VideoOff size={20} /> : <Video size={20} />}
+          </ControlButton>
+        )}
 
-        <ControlButton
-          onClick={toggleScreenShare}
-          active={isScreenSharing}
-          title={isScreenSharing ? 'Stop sharing' : 'Share screen'}
-        >
-          <Monitor size={20} />
-        </ControlButton>
+        {!isVoiceOnly && (
+          <ControlButton
+            onClick={toggleScreenShare}
+            active={isScreenSharing}
+            title={isScreenSharing ? 'Stop sharing' : 'Share screen'}
+          >
+            <Monitor size={20} />
+          </ControlButton>
+        )}
 
         <ControlButton
           onClick={() => setShowChat(!showChat)}

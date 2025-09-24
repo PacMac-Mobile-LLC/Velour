@@ -626,6 +626,50 @@ const MessagesTab = () => {
     );
   };
 
+  const handleVoiceCall = async (conversationId) => {
+    try {
+      // Create a room for voice call
+      const roomId = `voice-${conversationId}-${Date.now()}`;
+      
+      // Navigate to video room with voice-only mode
+      window.open(`/room/${roomId}?mode=voice`, '_blank');
+      
+      // Send call notification to the other user
+      await dashboardService.sendMessage(conversationId, {
+        type: 'call_notification',
+        callType: 'voice',
+        roomId: roomId,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Error starting voice call:', error);
+      alert('Failed to start voice call. Please try again.');
+    }
+  };
+
+  const handleVideoCall = async (conversationId) => {
+    try {
+      // Create a room for video call
+      const roomId = `video-${conversationId}-${Date.now()}`;
+      
+      // Navigate to video room
+      window.open(`/room/${roomId}`, '_blank');
+      
+      // Send call notification to the other user
+      await dashboardService.sendMessage(conversationId, {
+        type: 'call_notification',
+        callType: 'video',
+        roomId: roomId,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Error starting video call:', error);
+      alert('Failed to start video call. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <MessagesContainer>
@@ -739,10 +783,10 @@ const MessagesTab = () => {
                 </ChatUserDetails>
               </ChatUserInfo>
               <ChatActions>
-                <ChatActionButton>
+                <ChatActionButton onClick={() => handleVoiceCall(activeConversation.id)}>
                   <Phone size={18} />
                 </ChatActionButton>
-                <ChatActionButton>
+                <ChatActionButton onClick={() => handleVideoCall(activeConversation.id)}>
                   <Video size={18} />
                 </ChatActionButton>
                 <ChatActionButton>
