@@ -549,41 +549,6 @@ const BenefitDescription = styled.p`
   line-height: 1.5;
 `;
 
-const PolicySection = styled.div`
-  background: #000;
-  padding: 100px 20px;
-`;
-
-const PolicyContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-`;
-
-const PolicyContent = styled.div`
-  color: #ccc;
-  line-height: 1.8;
-  font-size: 1rem;
-`;
-
-const PolicySectionTitle = styled.h3`
-  color: white;
-  font-size: 1.5rem;
-  margin: 40px 0 20px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const PolicyList = styled.ul`
-  color: #ccc;
-  line-height: 1.8;
-  margin: 20px 0;
-  padding-left: 20px;
-`;
-
-const PolicyListItem = styled.li`
-  margin-bottom: 10px;
-`;
 
 const ContactInfo = styled.div`
   background: rgba(255, 105, 180, 0.1);
@@ -902,151 +867,6 @@ const HomePage = () => {
         </InfoContainer>
       </InfoSection>
 
-      {/* Privacy Policy Section */}
-      <PolicySection id="privacy">
-        <PolicyContainer>
-          <InfoTitle>Privacy Policy</InfoTitle>
-          <InfoSubtitle>
-            Your privacy is important to us. Here's how we protect and use your information.
-          </InfoSubtitle>
-          
-          <PolicyContent>
-            <PolicySectionTitle>
-              <span>📋</span>
-              Information We Collect
-            </PolicySectionTitle>
-            <p>
-              We collect information you provide directly to us, such as when you create an account, subscribe to a creator, or contact us for support. This may include your name, email address, payment information, and content you create or share.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>🔒</span>
-              How We Use Your Information
-            </PolicySectionTitle>
-            <PolicyList>
-              <PolicyListItem>To provide, maintain, and improve our services</PolicyListItem>
-              <PolicyListItem>To process transactions and send related information</PolicyListItem>
-              <PolicyListItem>To send technical notices and support messages</PolicyListItem>
-              <PolicyListItem>To respond to your comments and questions</PolicyListItem>
-              <PolicyListItem>To protect against fraud and abuse</PolicyListItem>
-            </PolicyList>
-            
-            <PolicySectionTitle>
-              <span>🛡️</span>
-              Information Security
-            </PolicySectionTitle>
-            <p>
-              We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. Your payment information is processed securely through Stripe and is never stored on our servers.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>🍪</span>
-              Cookies and Tracking
-            </PolicySectionTitle>
-            <p>
-              We use cookies and similar technologies to enhance your experience, analyze usage patterns, and provide personalized content. You can control cookie settings through your browser preferences.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>📞</span>
-              Contact Us
-            </PolicySectionTitle>
-            <p>
-              If you have any questions about this Privacy Policy, please contact us at{' '}
-              <ContactEmail href="mailto:privacy@vibecodes.space">
-                privacy@vibecodes.space
-              </ContactEmail>
-            </p>
-            
-            <p style={{ marginTop: '40px', fontSize: '0.9rem', color: '#888' }}>
-              Last updated: December 2024
-            </p>
-          </PolicyContent>
-        </PolicyContainer>
-      </PolicySection>
-
-      {/* Terms of Service Section */}
-      <PolicySection id="terms">
-        <PolicyContainer>
-          <InfoTitle>Terms of Service</InfoTitle>
-          <InfoSubtitle>
-            Please read these terms carefully before using our platform.
-          </InfoSubtitle>
-          
-          <PolicyContent>
-            <PolicySectionTitle>
-              <span>📝</span>
-              Acceptance of Terms
-            </PolicySectionTitle>
-            <p>
-              By accessing or using Velour, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using this platform.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>👤</span>
-              User Accounts
-            </PolicySectionTitle>
-            <p>
-              You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must provide accurate and complete information when creating your account.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>🎨</span>
-              Content Guidelines
-            </PolicySectionTitle>
-            <PolicyList>
-              <PolicyListItem>Content must be original or you must have proper rights to share it</PolicyListItem>
-              <PolicyListItem>No illegal, harmful, or offensive content</PolicyListItem>
-              <PolicyListItem>No spam, harassment, or abuse of other users</PolicyListItem>
-              <PolicyListItem>No impersonation of other individuals or entities</PolicyListItem>
-              <PolicyListItem>Respect intellectual property rights</PolicyListItem>
-            </PolicyList>
-            
-            <PolicySectionTitle>
-              <span>💳</span>
-              Payments and Subscriptions
-            </PolicySectionTitle>
-            <p>
-              Subscription fees are charged in advance and are non-refundable except as required by law. You can cancel your subscription at any time, and you'll continue to have access until the end of your current billing period.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>⚖️</span>
-              Intellectual Property
-            </PolicySectionTitle>
-            <p>
-              You retain ownership of the content you create and share on Velour. By using our platform, you grant us a license to display, distribute, and promote your content as necessary to provide our services.
-            </p>
-            
-            <PolicySectionTitle>
-              <span>🚫</span>
-              Prohibited Uses
-            </PolicySectionTitle>
-            <PolicyList>
-              <PolicyListItem>Violating any applicable laws or regulations</PolicyListItem>
-              <PolicyListItem>Infringing on intellectual property rights</PolicyListItem>
-              <PolicyListItem>Transmitting harmful or malicious code</PolicyListItem>
-              <PolicyListItem>Attempting to gain unauthorized access to our systems</PolicyListItem>
-              <PolicyListItem>Interfering with the proper functioning of the platform</PolicyListItem>
-            </PolicyList>
-            
-            <PolicySectionTitle>
-              <span>📞</span>
-              Contact Information
-            </PolicySectionTitle>
-            <p>
-              For questions about these Terms of Service, please contact us at{' '}
-              <ContactEmail href="mailto:legal@vibecodes.space">
-                legal@vibecodes.space
-              </ContactEmail>
-            </p>
-            
-            <p style={{ marginTop: '40px', fontSize: '0.9rem', color: '#888' }}>
-              Last updated: December 2024
-            </p>
-          </PolicyContent>
-        </PolicyContainer>
-      </PolicySection>
 
       <Footer>
         <FooterContent>
@@ -1054,8 +874,8 @@ const HomePage = () => {
             <FooterLink href="#about">About</FooterLink>
             <FooterLink href="#creators">Creators</FooterLink>
             <FooterLink href="/support">Support</FooterLink>
-            <FooterLink href="#privacy">Privacy</FooterLink>
-            <FooterLink href="#terms">Terms</FooterLink>
+            <FooterLink href="/privacy">Privacy</FooterLink>
+            <FooterLink href="/terms">Terms</FooterLink>
             <FooterLink href="mailto:support@vibecodes.space">Contact</FooterLink>
           </FooterLinks>
           <FooterText>
