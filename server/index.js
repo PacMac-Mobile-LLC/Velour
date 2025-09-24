@@ -14,7 +14,8 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' ? [
-      "https://videochat-wv3g.onrender.com",
+      "https://vibecodes.space",
+      "https://velour-wxv9.onrender.com",
       process.env.FRONTEND_URL
     ].filter(Boolean) : "http://localhost:3000",
     methods: ["GET", "POST"]
@@ -61,7 +62,8 @@ app.use('/api/', limiter);
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        "https://videochat-wv3g.onrender.com",
+        "https://vibecodes.space",
+        "https://velour-wxv9.onrender.com",
         process.env.FRONTEND_URL
       ].filter(Boolean)
     : "http://localhost:3000",
@@ -610,7 +612,8 @@ server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📡 Socket.IO server initialized`);
   console.log(`🌐 CORS configured for:`, process.env.NODE_ENV === 'production' ? [
-    "https://videochat-wv3g.onrender.com",
+    "https://vibecodes.space",
+    "https://velour-wxv9.onrender.com",
     process.env.FRONTEND_URL
   ].filter(Boolean) : "http://localhost:3000");
 });
