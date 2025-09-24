@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -16,6 +16,25 @@ import NotificationPrompt from './components/NotificationPrompt';
 import './App.css';
 
 const queryClient = new QueryClient();
+
+// Component to handle Auth0 redirect callback
+const Auth0RedirectHandler = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, loading } = useAuth0Context();
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      const returnTo = sessionStorage.getItem('auth0_return_to');
+      if (returnTo) {
+        console.log('Navigating to stored return URL:', returnTo);
+        sessionStorage.removeItem('auth0_return_to');
+        navigate(returnTo, { replace: true });
+      }
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  return null;
+};
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -76,14 +95,18 @@ function App() {
         clientId={auth0Config.clientId}
         authorizationParams={auth0Config.authorizationParams}
         onRedirectCallback={(appState) => {
-          // Redirect to dashboard after successful login
-          window.location.replace(appState?.returnTo || '/dashboard');
+          // Store the return URL for React Router to handle
+          const returnTo = appState?.returnTo || '/dashboard';
+          console.log('Auth0 redirect callback, will navigate to:', returnTo);
+          // Store in sessionStorage for the app to pick up
+          sessionStorage.setItem('auth0_return_to', returnTo);
         }}
       >
         <Auth0ContextProvider>
           <StripeProvider>
             <Router>
             <div className="App">
+              <Auth0RedirectHandler />
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<HomePage />} />

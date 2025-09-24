@@ -2,4 +2,10 @@
 # This file tells the server to serve index.html for all routes
 # so React Router can handle the routing
 
+# Redirect all routes to index.html with 200 status
 /*    /index.html   200
+
+# Specific redirects for common routes
+/dashboard    /index.html   200
+/support      /index.html   200
+/auth         /index.html   200
