@@ -42,6 +42,8 @@ import NotificationsTab from './NotificationsTab';
 import MessagesTab from './MessagesTab';
 import CollectionsTab from './CollectionsTab';
 import VaultTab from './VaultTab';
+import QueueTab from './QueueTab';
+import StatementsTab from './StatementsTab';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -722,38 +724,10 @@ const Dashboard = () => {
         return <VaultTab />;
       
       case 'queue':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <Calendar size={20} />
-              Queue
-            </SectionTitle>
-            <SectionContent>
-              <p>Schedule your live streaming sessions and content releases.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <Calendar size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Queue system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <QueueTab />;
       
       case 'statements':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <BarChart3 size={20} />
-              Statements
-            </SectionTitle>
-            <SectionContent>
-              <p>View your payout history and earnings statements.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <BarChart3 size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Statements system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <StatementsTab />;
       
       case 'statistics':
         return (
