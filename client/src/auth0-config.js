@@ -1,7 +1,7 @@
 // Auth0 Configuration
 export const auth0Config = {
   domain: process.env.REACT_APP_AUTH0_DOMAIN || 'vibecodes.us.auth0.com',
-  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID || 'ed0G8cJCBxwo0pgYuvFHIJ7tRn51w0kj',
+  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID || 'OejuDvHhYdI5z7a2x6K3R5zWQxhy0gY2',
   authorizationParams: {
     redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI || 'https://www.vibecodes.space',
     audience: process.env.REACT_APP_AUTH0_AUDIENCE,
