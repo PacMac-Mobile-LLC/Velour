@@ -44,6 +44,8 @@ import CollectionsTab from './CollectionsTab';
 import VaultTab from './VaultTab';
 import QueueTab from './QueueTab';
 import StatementsTab from './StatementsTab';
+import StatisticsTab from './StatisticsTab';
+import ProfileTab from './ProfileTab';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -730,38 +732,10 @@ const Dashboard = () => {
         return <StatementsTab />;
       
       case 'statistics':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <TrendingUp size={20} />
-              Statistics
-            </SectionTitle>
-            <SectionContent>
-              <p>Track your performance metrics and audience engagement over time.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <TrendingUp size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Advanced statistics coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <StatisticsTab />;
       
       case 'profile':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <User size={20} />
-              My Profile
-            </SectionTitle>
-            <SectionContent>
-              <p>Manage your profile, customize your feed, and add personal links.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <User size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Profile management coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <ProfileTab />;
       
       default:
         return (
