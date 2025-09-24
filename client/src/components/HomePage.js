@@ -594,11 +594,27 @@ const HomePage = () => {
           </HeroSubtitle>
           
           <CTAButtons>
-            <PrimaryButton onClick={() => loginWithRedirect()}>
+            <PrimaryButton onClick={() => {
+              console.log('Start Creating button clicked');
+              console.log('loginWithRedirect function:', loginWithRedirect);
+              try {
+                loginWithRedirect();
+              } catch (error) {
+                console.error('Error calling loginWithRedirect:', error);
+              }
+            }}>
               <Plus size={20} />
               Start Creating
             </PrimaryButton>
-            <SecondaryButton onClick={() => loginWithRedirect()}>
+            <SecondaryButton onClick={() => {
+              console.log('Browse Creators button clicked');
+              console.log('loginWithRedirect function:', loginWithRedirect);
+              try {
+                loginWithRedirect();
+              } catch (error) {
+                console.error('Error calling loginWithRedirect:', error);
+              }
+            }}>
               <Heart size={20} />
               Browse Creators
             </SecondaryButton>
@@ -695,7 +711,15 @@ const HomePage = () => {
                     </PricingFeature>
                   ))}
                 </PricingFeatures>
-                <PrimaryButton style={{ width: '100%' }} onClick={() => loginWithRedirect()}>
+                <PrimaryButton style={{ width: '100%' }} onClick={() => {
+                  console.log('Get Started button clicked');
+                  console.log('loginWithRedirect function:', loginWithRedirect);
+                  try {
+                    loginWithRedirect();
+                  } catch (error) {
+                    console.error('Error calling loginWithRedirect:', error);
+                  }
+                }}>
                   Get Started
                 </PrimaryButton>
               </PricingCard>
