@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { useAuth0Context } from '../contexts/Auth0Context';
 import { useStripe } from '../contexts/StripeContext';
+import { dashboardService } from '../services/dashboardService';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -420,26 +421,86 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [subscriptions, setSubscriptions] = useState([]);
   const [analytics, setAnalytics] = useState({});
+  const [notifications, setNotifications] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [vaultContent, setVaultContent] = useState([]);
+  const [queue, setQueue] = useState([]);
+  const [statements, setStatements] = useState([]);
+  const [profile, setProfile] = useState({});
+  const [recommendedCreators, setRecommendedCreators] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
         setLoading(true);
+        setError(null);
         
+        // Load dashboard stats
+        const statsResult = await dashboardService.getDashboardStats();
+        if (statsResult.success) {
+          setAnalytics(statsResult.data);
+        }
+
         // Load subscriptions
-        const subsResult = await getSubscriptions();
+        const subsResult = await dashboardService.getSubscriptions();
         if (subsResult.success) {
           setSubscriptions(subsResult.data || []);
         }
 
-        // Load analytics
-        const analyticsResult = await getAnalytics();
-        if (analyticsResult.success) {
-          setAnalytics(analyticsResult.data || {});
+        // Load notifications
+        const notificationsResult = await dashboardService.getNotifications();
+        if (notificationsResult.success) {
+          setNotifications(notificationsResult.data || []);
         }
+
+        // Load conversations
+        const conversationsResult = await dashboardService.getConversations();
+        if (conversationsResult.success) {
+          setConversations(conversationsResult.data || []);
+        }
+
+        // Load collections
+        const collectionsResult = await dashboardService.getCollections();
+        if (collectionsResult.success) {
+          setCollections(collectionsResult.data || []);
+        }
+
+        // Load vault content
+        const vaultResult = await dashboardService.getVaultContent();
+        if (vaultResult.success) {
+          setVaultContent(vaultResult.data || []);
+        }
+
+        // Load queue
+        const queueResult = await dashboardService.getQueue();
+        if (queueResult.success) {
+          setQueue(queueResult.data || []);
+        }
+
+        // Load statements
+        const statementsResult = await dashboardService.getStatements();
+        if (statementsResult.success) {
+          setStatements(statementsResult.data || []);
+        }
+
+        // Load profile
+        const profileResult = await dashboardService.getProfile();
+        if (profileResult.success) {
+          setProfile(profileResult.data || {});
+        }
+
+        // Load recommended creators
+        const recommendedResult = await dashboardService.getRecommendedCreators();
+        if (recommendedResult.success) {
+          setRecommendedCreators(recommendedResult.data || []);
+        }
+
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        setError('Failed to load dashboard data. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -448,12 +509,12 @@ const Dashboard = () => {
     if (isAuthenticated) {
       loadDashboardData();
     }
-  }, [isAuthenticated, getSubscriptions, getAnalytics]);
+  }, [isAuthenticated]);
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home, badge: null },
-    { id: 'notifications', label: 'Notifications', icon: Bell, badge: 2 },
-    { id: 'messages', label: 'Messages', icon: MessageCircle, badge: 2 },
+    { id: 'notifications', label: 'Notifications', icon: Bell, badge: notifications.filter(n => !n.read).length || null },
+    { id: 'messages', label: 'Messages', icon: MessageCircle, badge: conversations.filter(c => c.unreadCount > 0).length || null },
     { id: 'collections', label: 'Collections', icon: Star, badge: null },
     { id: 'vault', label: 'Vault', icon: Archive, badge: null },
     { id: 'queue', label: 'Queue', icon: Calendar, badge: null },
@@ -474,10 +535,10 @@ const Dashboard = () => {
                   <StatTitle>Active Subscriptions</StatTitle>
                   <StatIcon><Heart size={20} /></StatIcon>
                 </StatHeader>
-                <StatValue>{subscriptions.length}</StatValue>
-                <StatChange positive>
+                <StatValue>{analytics.activeSubscriptions || subscriptions.length}</StatValue>
+                <StatChange positive={analytics.subscriptionGrowth >= 0}>
                   <TrendingUp size={12} />
-                  +12% this month
+                  {analytics.subscriptionGrowth >= 0 ? '+' : ''}{analytics.subscriptionGrowth || 0}% this month
                 </StatChange>
               </StatCard>
               
@@ -487,9 +548,9 @@ const Dashboard = () => {
                   <StatIcon><Eye size={20} /></StatIcon>
                 </StatHeader>
                 <StatValue>{analytics.totalViews || 0}</StatValue>
-                <StatChange positive>
+                <StatChange positive={analytics.viewGrowth >= 0}>
                   <TrendingUp size={12} />
-                  +8% this week
+                  {analytics.viewGrowth >= 0 ? '+' : ''}{analytics.viewGrowth || 0}% this week
                 </StatChange>
               </StatCard>
               
@@ -499,9 +560,9 @@ const Dashboard = () => {
                   <StatIcon><MessageCircle size={20} /></StatIcon>
                 </StatHeader>
                 <StatValue>{analytics.messagesSent || 0}</StatValue>
-                <StatChange positive>
+                <StatChange positive={analytics.messageGrowth >= 0}>
                   <TrendingUp size={12} />
-                  +15% today
+                  {analytics.messageGrowth >= 0 ? '+' : ''}{analytics.messageGrowth || 0}% today
                 </StatChange>
               </StatCard>
               
@@ -511,9 +572,9 @@ const Dashboard = () => {
                   <StatIcon><DollarSign size={20} /></StatIcon>
                 </StatHeader>
                 <StatValue>${analytics.monthlyRevenue || 0}</StatValue>
-                <StatChange positive>
+                <StatChange positive={analytics.revenueGrowth >= 0}>
                   <TrendingUp size={12} />
-                  +23% this month
+                  {analytics.revenueGrowth >= 0 ? '+' : ''}{analytics.revenueGrowth || 0}% this month
                 </StatChange>
               </StatCard>
             </StatsGrid>
@@ -556,15 +617,79 @@ const Dashboard = () => {
                 Recent Activity
               </SectionTitle>
               <SectionContent>
-                <p>Welcome back, {user?.name || 'Creator'}! Here's what's happening with your content:</p>
-                <ul style={{ marginTop: '15px', paddingLeft: '20px' }}>
-                  <li>3 new subscribers joined today</li>
-                  <li>12 messages received in the last hour</li>
-                  <li>Your latest post has 45 likes</li>
-                  <li>2 scheduled live sessions coming up</li>
-                </ul>
+                <p>Welcome back, {profile.displayName || user?.name || 'Creator'}! Here's what's happening with your content:</p>
+                {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
+                  <ul style={{ marginTop: '15px', paddingLeft: '20px' }}>
+                    {analytics.recentActivity.map((activity, index) => (
+                      <li key={index}>{activity.description}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={{ marginTop: '20px', textAlign: 'center', padding: '20px', color: '#888' }}>
+                    <Info size={24} style={{ marginBottom: '10px', opacity: 0.5 }} />
+                    <p>No recent activity to display</p>
+                    <p style={{ fontSize: '0.9rem' }}>Start creating content to see your activity here!</p>
+                  </div>
+                )}
               </SectionContent>
             </ContentSection>
+
+            {recommendedCreators.length > 0 && (
+              <ContentSection>
+                <SectionTitle>
+                  <Star size={20} />
+                  Recommended Creators
+                </SectionTitle>
+                <SectionContent>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '20px' }}>
+                    {recommendedCreators.slice(0, 4).map((creator) => (
+                      <div key={creator.id} style={{ 
+                        background: 'rgba(42, 42, 42, 0.6)', 
+                        border: '1px solid #444', 
+                        borderRadius: '10px', 
+                        padding: '15px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}>
+                        <div style={{ 
+                          width: '50px', 
+                          height: '50px', 
+                          borderRadius: '50%', 
+                          background: 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
+                          margin: '0 auto 10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: 'bold'
+                        }}>
+                          {creator.displayName?.charAt(0) || 'C'}
+                        </div>
+                        <div style={{ color: 'white', fontWeight: '600', marginBottom: '5px' }}>
+                          {creator.displayName}
+                        </div>
+                        <div style={{ color: '#ccc', fontSize: '0.8rem', marginBottom: '10px' }}>
+                          @{creator.username}
+                        </div>
+                        <div style={{ 
+                          background: 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '5px',
+                          padding: '8px 16px',
+                          fontSize: '0.8rem',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}>
+                          Subscribe
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </SectionContent>
+              </ContentSection>
+            )}
           </div>
         );
       
@@ -732,7 +857,61 @@ const Dashboard = () => {
           color: 'white',
           fontSize: '1.2rem'
         }}>
-          Loading your dashboard...
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ 
+              width: '50px', 
+              height: '50px', 
+              border: '3px solid rgba(255, 105, 180, 0.3)',
+              borderTop: '3px solid #ff69b4',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 20px'
+            }}></div>
+            Loading your dashboard...
+          </div>
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </DashboardContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardContainer>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          width: '100%',
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+          color: 'white',
+          fontSize: '1.2rem'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <AlertCircle size={48} style={{ marginBottom: '20px', color: '#f87171' }} />
+            <p style={{ marginBottom: '20px' }}>{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              style={{
+                background: 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '12px 24px',
+                color: 'white',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </DashboardContainer>
     );
