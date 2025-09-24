@@ -34,6 +34,8 @@ import {
 import { useAuth0Context } from '../contexts/Auth0Context';
 import { useStripe } from '../contexts/StripeContext';
 import { dashboardService } from '../services/dashboardService';
+import { useWelcomeMessage } from '../hooks/useWelcomeMessage';
+import WelcomeMessage from './WelcomeMessage';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -418,6 +420,7 @@ const SectionContent = styled.div`
 const Dashboard = () => {
   const { user, isAuthenticated } = useAuth0Context();
   const { getSubscriptions, getAnalytics } = useStripe();
+  const { showWelcome, closeWelcome, welcomeMessage } = useWelcomeMessage(user, isAuthenticated);
   const [activeTab, setActiveTab] = useState('home');
   const [subscriptions, setSubscriptions] = useState([]);
   const [analytics, setAnalytics] = useState({});
@@ -919,6 +922,11 @@ const Dashboard = () => {
 
   return (
     <DashboardContainer>
+      <WelcomeMessage 
+        isOpen={showWelcome} 
+        onClose={closeWelcome} 
+        user={user}
+      />
       <Sidebar>
         <ProfileSection>
           <ProfilePicture>
