@@ -40,6 +40,8 @@ import WelcomeMessage from './WelcomeMessage';
 import AgeVerification from './AgeVerification';
 import NotificationsTab from './NotificationsTab';
 import MessagesTab from './MessagesTab';
+import CollectionsTab from './CollectionsTab';
+import VaultTab from './VaultTab';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -714,38 +716,10 @@ const Dashboard = () => {
         return <MessagesTab />;
       
       case 'collections':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <Star size={20} />
-              Collections
-            </SectionTitle>
-            <SectionContent>
-              <p>Create categories and organize your favorite creators.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <Star size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Collections system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <CollectionsTab />;
       
       case 'vault':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <Archive size={20} />
-              Vault
-            </SectionTitle>
-            <SectionContent>
-              <p>Store and manage your private photos, videos, and content.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <Archive size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Vault system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <VaultTab />;
       
       case 'queue':
         return (
