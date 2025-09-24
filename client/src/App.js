@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0ContextProvider, useAuth0Context } from './contexts/Auth0Context';
 import { StripeProvider } from './contexts/StripeContext';
 import { initializePWA } from './utils/pwa';
-import Auth from './components/Auth';
+import { auth0Config } from './auth0-config';
+import Auth0Login from './components/Auth0Login';
 import Dashboard from './components/Dashboard';
 import HomePage from './components/HomePage';
 import VideoRoom from './components/VideoRoom';
@@ -16,7 +18,7 @@ const queryClient = new QueryClient();
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth0Context();
   
   if (loading) {
     return (
@@ -39,7 +41,7 @@ const ProtectedRoute = ({ children }) => {
 
 // Public Route Component (redirect to dashboard if authenticated)
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth0Context();
   
   if (loading) {
     return (
@@ -68,9 +70,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StripeProvider>
-          <Router>
+      <Auth0Provider
+        domain={auth0Config.domain}
+        clientId={auth0Config.clientId}
+        authorizationParams={auth0Config.authorizationParams}
+      >
+        <Auth0ContextProvider>
+          <StripeProvider>
+            <Router>
             <div className="App">
               <Routes>
                 {/* Public routes */}
@@ -82,7 +89,7 @@ function App() {
                   path="/auth" 
                   element={
                     <PublicRoute>
-                      <Auth />
+                      <Auth0Login />
                     </PublicRoute>
                   } 
                 />
@@ -132,7 +139,8 @@ function App() {
             </div>
           </Router>
         </StripeProvider>
-      </AuthProvider>
+      </Auth0ContextProvider>
+      </Auth0Provider>
     </QueryClientProvider>
   );
 }
