@@ -5,7 +5,7 @@ export const dashboardService = {
   // Get dashboard overview stats
   async getDashboardStats() {
     try {
-      const response = await api.get('/api/dashboard/stats');
+      const response = await api.get('/dashboard/stats');
       return {
         success: true,
         data: response.data
@@ -22,7 +22,7 @@ export const dashboardService = {
   // Get user subscriptions
   async getSubscriptions() {
     try {
-      const response = await api.get('/api/subscriptions');
+      const response = await api.get('/subscriptions');
       return {
         success: true,
         data: response.data
@@ -39,7 +39,7 @@ export const dashboardService = {
   // Get notifications
   async getNotifications(page = 1, limit = 20) {
     try {
-      const response = await api.get(`/api/notifications?page=${page}&limit=${limit}`);
+      const response = await api.get(`/notifications?page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -56,7 +56,7 @@ export const dashboardService = {
   // Mark notification as read
   async markNotificationAsRead(notificationId) {
     try {
-      const response = await api.put(`/api/notifications/${notificationId}/read`);
+      const response = await api.put(`/notifications/${notificationId}/read`);
       return {
         success: true,
         data: response.data
@@ -73,7 +73,7 @@ export const dashboardService = {
   // Get messages/conversations
   async getConversations(page = 1, limit = 20) {
     try {
-      const response = await api.get(`/api/messages/conversations?page=${page}&limit=${limit}`);
+      const response = await api.get(`/messages/conversations?page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -90,7 +90,7 @@ export const dashboardService = {
   // Get messages for a specific conversation
   async getMessages(conversationId, page = 1, limit = 50) {
     try {
-      const response = await api.get(`/api/messages/${conversationId}?page=${page}&limit=${limit}`);
+      const response = await api.get(`/messages/${conversationId}?page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -107,7 +107,7 @@ export const dashboardService = {
   // Send a message
   async sendMessage(conversationId, content, type = 'text') {
     try {
-      const response = await api.post(`/api/messages/${conversationId}`, {
+      const response = await api.post(`/messages/${conversationId}`, {
         content,
         type
       });
@@ -127,7 +127,7 @@ export const dashboardService = {
   // Get collections
   async getCollections() {
     try {
-      const response = await api.get('/api/collections');
+      const response = await api.get('/collections');
       return {
         success: true,
         data: response.data
@@ -144,7 +144,7 @@ export const dashboardService = {
   // Create a new collection
   async createCollection(name, description) {
     try {
-      const response = await api.post('/api/collections', {
+      const response = await api.post('/collections', {
         name,
         description
       });
@@ -164,7 +164,7 @@ export const dashboardService = {
   // Add creator to collection
   async addCreatorToCollection(collectionId, creatorId) {
     try {
-      const response = await api.post(`/api/collections/${collectionId}/creators`, {
+      const response = await api.post(`/collections/${collectionId}/creators`, {
         creatorId
       });
       return {
@@ -183,7 +183,7 @@ export const dashboardService = {
   // Get vault content
   async getVaultContent(page = 1, limit = 20, type = 'all') {
     try {
-      const response = await api.get(`/api/vault?page=${page}&limit=${limit}&type=${type}`);
+      const response = await api.get(`/vault?page=${page}&limit=${limit}&type=${type}`);
       return {
         success: true,
         data: response.data
@@ -204,7 +204,7 @@ export const dashboardService = {
       formData.append('file', file);
       formData.append('metadata', JSON.stringify(metadata));
 
-      const response = await api.post('/api/vault/upload', formData, {
+      const response = await api.post('/vault/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -225,7 +225,7 @@ export const dashboardService = {
   // Get queue/scheduled content
   async getQueue(page = 1, limit = 20) {
     try {
-      const response = await api.get(`/api/queue?page=${page}&limit=${limit}`);
+      const response = await api.get(`/queue?page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -242,7 +242,7 @@ export const dashboardService = {
   // Schedule content
   async scheduleContent(contentId, scheduledDate, type = 'post') {
     try {
-      const response = await api.post('/api/queue/schedule', {
+      const response = await api.post('/queue/schedule', {
         contentId,
         scheduledDate,
         type
@@ -263,7 +263,7 @@ export const dashboardService = {
   // Get statements/payouts
   async getStatements(page = 1, limit = 20) {
     try {
-      const response = await api.get(`/api/statements?page=${page}&limit=${limit}`);
+      const response = await api.get(`/statements?page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -280,7 +280,7 @@ export const dashboardService = {
   // Get analytics data
   async getAnalytics(timeframe = '30d') {
     try {
-      const response = await api.get(`/api/analytics?timeframe=${timeframe}`);
+      const response = await api.get(`/analytics?timeframe=${timeframe}`);
       return {
         success: true,
         data: response.data
@@ -297,7 +297,7 @@ export const dashboardService = {
   // Get profile data
   async getProfile() {
     try {
-      const response = await api.get('/api/profile');
+      const response = await api.get('/profile');
       return {
         success: true,
         data: response.data
@@ -314,7 +314,7 @@ export const dashboardService = {
   // Update profile
   async updateProfile(profileData) {
     try {
-      const response = await api.put('/api/profile', profileData);
+      const response = await api.put('/profile', profileData);
       return {
         success: true,
         data: response.data
@@ -331,7 +331,7 @@ export const dashboardService = {
   // Get recommended creators
   async getRecommendedCreators(limit = 10) {
     try {
-      const response = await api.get(`/api/creators/recommended?limit=${limit}`);
+      const response = await api.get(`/creators/recommended?limit=${limit}`);
       return {
         success: true,
         data: response.data
@@ -348,7 +348,7 @@ export const dashboardService = {
   // Search creators
   async searchCreators(query, page = 1, limit = 20) {
     try {
-      const response = await api.get(`/api/creators/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+      const response = await api.get(`/creators/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
       return {
         success: true,
         data: response.data
