@@ -39,6 +39,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboardService';
+import { queueService } from '../services/queueService';
 
 const QueueContainer = styled.div`
   padding: 20px;

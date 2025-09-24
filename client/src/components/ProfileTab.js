@@ -62,6 +62,8 @@ import {
   Volume2
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboardService';
+import { profileService } from '../services/profileService';
+import { uploadService } from '../services/uploadService';
 
 const ProfileContainer = styled.div`
   padding: 20px;

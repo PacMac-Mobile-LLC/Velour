@@ -32,6 +32,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { dashboardService } from '../services/dashboardService';
+import { uploadService } from '../services/uploadService';
 
 const VaultContainer = styled.div`
   padding: 20px;
@@ -412,18 +413,27 @@ const VaultTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadMetadata, setUploadMetadata] = useState({
+    title: '',
+    description: '',
+    isPrivate: false,
+    tags: ''
+  });
 
   useEffect(() => {
     loadVaultContent();
-  }, []);
+  }, [activeFilter]);
 
   const loadVaultContent = async () => {
     try {
       setLoading(true);
-      const result = await dashboardService.getVaultContent();
+      const result = await uploadService.getVaultContent(1, 20, activeFilter);
       
       if (result.success) {
-        setContent(result.data || []);
+        setContent(result.data.data || []);
       } else {
         // Use mock data for now
         const mockContent = [
@@ -526,6 +536,61 @@ const VaultTab = () => {
     return filtered;
   };
 
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setUploadMetadata(prev => ({
+        ...prev,
+        title: file.name.split('.')[0] // Use filename without extension as default title
+      }));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setUploading(true);
+      const result = await uploadService.uploadToVault(selectedFile, uploadMetadata);
+      
+      if (result.success) {
+        setShowUploadModal(false);
+        setSelectedFile(null);
+        setUploadMetadata({
+          title: '',
+          description: '',
+          isPrivate: false,
+          tags: ''
+        });
+        loadVaultContent(); // Reload content
+      } else {
+        alert(result.message || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteContent = async (contentId) => {
+    if (!window.confirm('Are you sure you want to delete this content?')) return;
+
+    try {
+      const result = await uploadService.deleteVaultContent(contentId);
+      if (result.success) {
+        loadVaultContent(); // Reload content
+      } else {
+        alert(result.message || 'Delete failed');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Delete failed');
+    }
+  };
+
   const getContentIcon = (type) => {
     switch (type) {
       case 'image': return <Image size={32} />;
@@ -602,7 +667,7 @@ const VaultTab = () => {
               <List size={16} />
             </ViewButton>
           </ViewToggle>
-          <ActionButton primary>
+          <ActionButton primary onClick={() => setShowUploadModal(true)}>
             <Upload size={16} />
             Upload Content
           </ActionButton>
@@ -753,7 +818,7 @@ const VaultTab = () => {
                   <ContentActionButton title="Edit">
                     <Edit3 size={16} />
                   </ContentActionButton>
-                  <ContentActionButton title="Delete">
+                  <ContentActionButton title="Delete" onClick={() => handleDeleteContent(item.id)}>
                     <Trash2 size={16} />
                   </ContentActionButton>
                 </ContentActions>
@@ -761,6 +826,155 @@ const VaultTab = () => {
             </ContentCard>
           ))}
         </ContentGrid>
+      )}
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+            borderRadius: '20px',
+            padding: '30px',
+            width: '90%',
+            maxWidth: '500px',
+            color: 'white',
+            border: '1px solid rgba(255, 105, 180, 0.3)'
+          }}>
+            <h3 style={{ margin: '0 0 20px 0', color: 'white' }}>Upload Content</h3>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '10px', color: '#ccc' }}>
+                Select File
+              </label>
+              <input
+                type="file"
+                onChange={handleFileSelect}
+                accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  border: '1px solid #444',
+                  borderRadius: '10px',
+                  color: 'white'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '10px', color: '#ccc' }}>
+                Title
+              </label>
+              <input
+                type="text"
+                value={uploadMetadata.title}
+                onChange={(e) => setUploadMetadata(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Enter content title"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  border: '1px solid #444',
+                  borderRadius: '10px',
+                  color: 'white'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '10px', color: '#ccc' }}>
+                Description
+              </label>
+              <textarea
+                value={uploadMetadata.description}
+                onChange={(e) => setUploadMetadata(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Enter content description"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  border: '1px solid #444',
+                  borderRadius: '10px',
+                  color: 'white',
+                  resize: 'vertical'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '10px', color: '#ccc' }}>
+                Tags (comma-separated)
+              </label>
+              <input
+                type="text"
+                value={uploadMetadata.tags}
+                onChange={(e) => setUploadMetadata(prev => ({ ...prev, tags: e.target.value }))}
+                placeholder="Enter tags separated by commas"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  border: '1px solid #444',
+                  borderRadius: '10px',
+                  color: 'white'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ccc' }}>
+                <input
+                  type="checkbox"
+                  checked={uploadMetadata.isPrivate}
+                  onChange={(e) => setUploadMetadata(prev => ({ ...prev, isPrivate: e.target.checked }))}
+                />
+                Make this content private
+              </label>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowUploadModal(false)}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid #444',
+                  borderRadius: '10px',
+                  padding: '10px 20px',
+                  color: '#ccc',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpload}
+                disabled={!selectedFile || uploading}
+                style={{
+                  background: uploading ? '#666' : 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  padding: '10px 20px',
+                  color: 'white',
+                  cursor: uploading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {uploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </VaultContainer>
   );
