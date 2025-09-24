@@ -14,3 +14,4 @@ export const twitterConfig = {
   connection: 'twitter', // This will be configured in Auth0 dashboard
   login_hint: 'twitter'
 };
+// Force redeploy - Tue Sep 23 21:35:45 CDT 2025
