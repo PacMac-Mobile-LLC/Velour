@@ -29,7 +29,9 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Info
+  Info,
+  Menu,
+  X
 } from 'lucide-react';
 import { useAuth0Context } from '../contexts/Auth0Context';
 import { useStripe } from '../contexts/StripeContext';
@@ -66,6 +68,13 @@ const Sidebar = styled.div`
   height: 100vh;
   overflow-y: auto;
   z-index: 1000;
+  transition: transform 0.3s ease;
+  
+  @media (max-width: 768px) {
+    transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    width: 100%;
+    max-width: 320px;
+  }
 `;
 
 const ProfileSection = styled.div`
@@ -194,6 +203,10 @@ const MainContent = styled.div`
   margin-left: 280px;
   background: #111;
   min-height: 100vh;
+  
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 `;
 
 const ContentHeader = styled.div`
@@ -203,6 +216,10 @@ const ContentHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const HeaderTitle = styled.h1`
@@ -273,6 +290,78 @@ const ActionButton = styled.button`
 
 const ContentArea = styled.div`
   padding: 30px;
+  
+  @media (max-width: 768px) {
+    padding: 20px 15px;
+  }
+`;
+
+// Mobile-specific components
+const MobileHeader = styled.div`
+  display: none;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`;
+
+const MobileMenuButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 105, 180, 0.1);
+  }
+`;
+
+const MobileTitle = styled.h1`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+`;
+
+const Overlay = styled.div`
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  
+  @media (max-width: 768px) {
+    display: ${props => props.isOpen ? 'block' : 'none'};
+  }
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  margin-left: auto;
+  
+  &:hover {
+    background: rgba(255, 105, 180, 0.1);
+  }
 `;
 
 // Dashboard Stats Cards
@@ -451,6 +540,23 @@ const Dashboard = () => {
   const [recommendedCreators, setRecommendedCreators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Handle mobile menu toggle
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Handle tab change with mobile menu close
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setIsMobileMenuOpen(false); // Close mobile menu when tab changes
+  };
+
+  // Close mobile menu when clicking overlay
+  const handleOverlayClick = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -841,7 +947,22 @@ const Dashboard = () => {
           window.location.reload();
         }}
       />
-      <Sidebar>
+      
+      {/* Mobile Header */}
+      <MobileHeader>
+        <MobileMenuButton onClick={toggleMobileMenu}>
+          <Menu size={24} />
+        </MobileMenuButton>
+        <MobileTitle>
+          {navigationItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+        </MobileTitle>
+        <div></div> {/* Spacer for centering */}
+      </MobileHeader>
+
+      {/* Overlay for mobile */}
+      <Overlay isOpen={isMobileMenuOpen} onClick={handleOverlayClick} />
+
+      <Sidebar isOpen={isMobileMenuOpen}>
         <ProfileSection>
           <ProfilePicture>
             {user?.name?.charAt(0) || 'U'}
@@ -853,6 +974,9 @@ const Dashboard = () => {
             </ProfileName>
             <ProfileHandle>@{user?.nickname || 'user'}</ProfileHandle>
           </ProfileInfo>
+          <CloseButton onClick={toggleMobileMenu}>
+            <X size={20} />
+          </CloseButton>
         </ProfileSection>
 
         <Navigation>
@@ -860,7 +984,7 @@ const Dashboard = () => {
             <NavItem
               key={item.id}
               active={activeTab === item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleTabChange(item.id)}
             >
               <NavIcon>
                 <item.icon size={18} />
