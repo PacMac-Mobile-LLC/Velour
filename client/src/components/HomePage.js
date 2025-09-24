@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useAuth0Context } from '../contexts/Auth0Context';
 import { useAuth0 } from '@auth0/auth0-react';
 import Logo from './Logo';
+import PricingPlans from './PricingPlans';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -391,74 +392,6 @@ const SubscribeButton = styled.button`
   }
 `;
 
-const PricingSection = styled.div`
-  background: #111;
-  padding: 100px 20px;
-`;
-
-const PricingGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  max-width: 1000px;
-  margin: 0 auto;
-`;
-
-const PricingCard = styled.div`
-  background: #1a1a1a;
-  border-radius: 20px;
-  padding: 40px;
-  text-align: center;
-  border: 2px solid ${props => props.featured ? '#ff69b4' : '#333'};
-  position: relative;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-10px);
-    border-color: #ff69b4;
-  }
-`;
-
-const PricingBadge = styled.div`
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
-  color: white;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-`;
-
-const PricingTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: white;
-`;
-
-const PricingPrice = styled.div`
-  font-size: 3rem;
-  font-weight: 800;
-  color: #ff69b4;
-  margin-bottom: 20px;
-`;
-
-const PricingFeatures = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin-bottom: 30px;
-`;
-
-const PricingFeature = styled.li`
-  color: #ccc;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
 
 const Footer = styled.div`
   background: #000;
@@ -542,45 +475,6 @@ const HomePage = () => {
     { name: "Jordan Lee", subscribers: "9.7K", price: "$11.99", avatar: "👨‍🎨" }
   ];
 
-  const pricingPlans = [
-    {
-      title: "Creator",
-      price: "Free",
-      features: [
-        "Upload unlimited content",
-        "Set custom subscription prices",
-        "Direct messaging with fans",
-        "Analytics dashboard",
-        "Basic support"
-      ]
-    },
-    {
-      title: "Premium Creator",
-      price: "$29",
-      period: "/month",
-      featured: true,
-      features: [
-        "Everything in Creator",
-        "Priority customer support",
-        "Advanced analytics",
-        "Custom branding",
-        "Early access to new features",
-        "Revenue optimization tools"
-      ]
-    },
-    {
-      title: "Enterprise",
-      price: "Custom",
-      features: [
-        "Everything in Premium",
-        "Dedicated account manager",
-        "Custom integrations",
-        "White-label solution",
-        "24/7 phone support",
-        "Custom pricing structure"
-      ]
-    }
-  ];
 
   return (
     <Container>
@@ -687,46 +581,7 @@ const HomePage = () => {
         </FeaturesContainer>
       </CreatorsSection>
 
-      <PricingSection>
-        <FeaturesContainer>
-          <SectionTitle>Creator Pricing</SectionTitle>
-          <SectionSubtitle>
-            Choose the plan that works best for your creative journey
-          </SectionSubtitle>
-          
-          <PricingGrid>
-            {pricingPlans.map((plan, index) => (
-              <PricingCard key={index} featured={plan.featured}>
-                {plan.featured && <PricingBadge>Most Popular</PricingBadge>}
-                <PricingTitle>{plan.title}</PricingTitle>
-                <PricingPrice>
-                  {plan.price}
-                  {plan.period && <span style={{ fontSize: '1rem', color: '#ccc' }}>{plan.period}</span>}
-                </PricingPrice>
-                <PricingFeatures>
-                  {plan.features.map((feature, featureIndex) => (
-                    <PricingFeature key={featureIndex}>
-                      <Star size={16} color="#ff69b4" />
-                      {feature}
-                    </PricingFeature>
-                  ))}
-                </PricingFeatures>
-                <PrimaryButton style={{ width: '100%' }} onClick={() => {
-                  console.log('Get Started button clicked');
-                  console.log('loginWithRedirect function:', loginWithRedirect);
-                  try {
-                    loginWithRedirect();
-                  } catch (error) {
-                    console.error('Error calling loginWithRedirect:', error);
-                  }
-                }}>
-                  Get Started
-                </PrimaryButton>
-              </PricingCard>
-            ))}
-          </PricingGrid>
-        </FeaturesContainer>
-      </PricingSection>
+      <PricingPlans />
 
       <Footer>
         <FooterContent>
