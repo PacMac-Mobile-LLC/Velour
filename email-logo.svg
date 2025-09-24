@@ -1,0 +1,19 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="20" cy="20" r="18" fill="url(#gradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  
+  <!-- V letter -->
+  <path d="M12 8 L20 24 L28 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Brand text -->
+  <text x="45" y="16" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Velour</text>
+  <text x="45" y="28" font-family="Arial, sans-serif" font-size="8" fill="rgba(255,255,255,0.8)">Where Desire Meets Luxury</text>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff69b4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7a288a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
