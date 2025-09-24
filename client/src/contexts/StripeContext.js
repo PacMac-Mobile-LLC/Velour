@@ -2,6 +2,29 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 
+// Configure axios with base URL
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add request interceptor to include auth token
+api.interceptors.request.use(
+  async (config) => {
+    // Get the auth token from localStorage or Auth0
+    const token = localStorage.getItem('velour_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const StripeContext = createContext();
 
 export const useStripe = () => {
@@ -36,7 +59,7 @@ export const StripeProvider = ({ children }) => {
   const createSubscription = async (creatorId, plan, interval) => {
     try {
       setLoading(true);
-      const response = await axios.post('/api/payments/subscribe', {
+      const response = await api.post('/api/payments/subscribe', {
         creatorId,
         plan,
         interval
@@ -59,7 +82,7 @@ export const StripeProvider = ({ children }) => {
   const cancelSubscription = async (subscriptionId, immediately = false) => {
     try {
       setLoading(true);
-      const response = await axios.post(`/api/payments/cancel-subscription/${subscriptionId}`, {
+      const response = await api.post(`/api/payments/cancel-subscription/${subscriptionId}`, {
         immediately
       });
 
@@ -80,7 +103,7 @@ export const StripeProvider = ({ children }) => {
   const createPaymentIntent = async (contentId, amount) => {
     try {
       setLoading(true);
-      const response = await axios.post('/api/payments/pay-per-view', {
+      const response = await api.post('/api/payments/pay-per-view', {
         contentId,
         amount
       });
@@ -102,7 +125,7 @@ export const StripeProvider = ({ children }) => {
   const setupCustomer = async () => {
     try {
       setLoading(true);
-      const response = await axios.post('/api/payments/setup-customer');
+      const response = await api.post('/api/payments/setup-customer');
 
       return {
         success: true,
@@ -120,7 +143,7 @@ export const StripeProvider = ({ children }) => {
 
   const getPaymentMethods = async () => {
     try {
-      const response = await axios.get('/api/payments/payment-methods');
+      const response = await api.get('/api/payments/payment-methods');
 
       return {
         success: true,
@@ -136,7 +159,7 @@ export const StripeProvider = ({ children }) => {
 
   const getSubscriptions = async () => {
     try {
-      const response = await axios.get('/api/payments/subscriptions');
+      const response = await api.get('/api/payments/subscriptions');
 
       return {
         success: true,
@@ -152,7 +175,7 @@ export const StripeProvider = ({ children }) => {
 
   const getAnalytics = async () => {
     try {
-      const response = await axios.get('/api/payments/analytics');
+      const response = await api.get('/api/payments/analytics');
 
       return {
         success: true,
