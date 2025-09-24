@@ -131,6 +131,116 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     default: Date.now
+  },
+  // Age verification fields
+  isAgeVerified: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  ageVerifiedAt: {
+    type: Date,
+    default: null
+  },
+  ageVerificationStatus: {
+    type: String,
+    enum: ['not_started', 'pending', 'verified', 'failed', 'expired'],
+    default: 'not_started',
+    index: true
+  },
+  ageVerificationId: {
+    type: String,
+    default: null
+  },
+  // Additional profile fields
+  name: {
+    type: String,
+    trim: true
+  },
+  handle: {
+    type: String,
+    trim: true,
+    unique: true,
+    sparse: true
+  },
+  bio: {
+    type: String,
+    maxlength: 500,
+    default: ''
+  },
+  avatar: {
+    type: String,
+    default: null
+  },
+  avatarPath: {
+    type: String,
+    default: null
+  },
+  location: {
+    type: String,
+    trim: true
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  website: {
+    type: String,
+    trim: true
+  },
+  birthday: {
+    type: Date
+  },
+  // Profile settings
+  profileVisibility: {
+    type: String,
+    enum: ['public', 'private'],
+    default: 'public'
+  },
+  emailNotifications: {
+    type: Boolean,
+    default: true
+  },
+  pushNotifications: {
+    type: Boolean,
+    default: true
+  },
+  twoFactorAuth: {
+    type: Boolean,
+    default: false
+  },
+  dataSharing: {
+    type: Boolean,
+    default: false
+  },
+  marketingEmails: {
+    type: Boolean,
+    default: false
+  },
+  // External links
+  links: [{
+    id: String,
+    title: String,
+    description: String,
+    url: String,
+    type: {
+      type: String,
+      enum: ['social', 'website', 'support'],
+      default: 'website'
+    }
+  }],
+  // Stats
+  followers: {
+    type: Number,
+    default: 0
+  },
+  following: {
+    type: Number,
+    default: 0
+  },
+  posts: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

@@ -14,13 +14,14 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d1a2d 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       overflow: hidden;
+      position: relative;
     }
 
     .background-pattern {
@@ -29,38 +30,111 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ff6b6b" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ff6b6b" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="300" fill="url(%23a)"/><circle cx="800" cy="800" r="400" fill="url(%23a)"/></svg>');
-      opacity: 0.3;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(122, 40, 138, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(248, 187, 217, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(122, 40, 138, 0.08) 0%, transparent 50%);
       z-index: -1;
     }
 
+    .floating-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .floating-elements::before,
+    .floating-elements::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, rgba(122, 40, 138, 0.1), rgba(248, 187, 217, 0.1));
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-elements::before {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-elements::after {
+      bottom: 20%;
+      right: 10%;
+      animation-delay: 3s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
     .login-container {
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      border: 2px solid #ff69b4;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 24px;
+      padding: 48px 40px;
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(122, 40, 138, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(122, 40, 138, 0.3);
       text-align: center;
-      max-width: 400px;
+      max-width: 420px;
       width: 90%;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(122, 40, 138, 0.5), transparent);
     }
 
     .logo {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #7A288A 0%, #F8BBD9 50%, #7A288A 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #7A288A, transparent);
+      border-radius: 2px;
     }
 
     .tagline {
       font-size: 1.1rem;
-      color: #ccc;
-      margin-bottom: 40px;
+      color: #B8B8B8;
+      margin-bottom: 48px;
       line-height: 1.6;
+      font-weight: 400;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .auth0-lock {
@@ -87,63 +161,71 @@
     }
 
     .auth0-lock-input-wrap {
-      background: rgba(42, 42, 42, 0.8) !important;
-      border: 2px solid #444 !important;
-      border-radius: 15px !important;
-      margin-bottom: 20px !important;
+      background: rgba(20, 20, 20, 0.8) !important;
+      border: 1px solid rgba(122, 40, 138, 0.3) !important;
+      border-radius: 16px !important;
+      margin-bottom: 24px !important;
       transition: all 0.3s ease !important;
       backdrop-filter: blur(10px) !important;
+      position: relative;
     }
 
     .auth0-lock-input-wrap:focus-within {
-      border-color: #ff69b4 !important;
-      box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2) !important;
-      background: rgba(42, 42, 42, 0.9) !important;
+      border-color: #7A288A !important;
+      box-shadow: 0 0 0 3px rgba(122, 40, 138, 0.2) !important;
+      background: rgba(20, 20, 20, 0.9) !important;
+      transform: translateY(-1px);
     }
 
     .auth0-lock-input {
       background: transparent !important;
       color: white !important;
       font-size: 16px !important;
-      padding: 18px 20px !important;
+      padding: 20px 24px !important;
       border: none !important;
       outline: none !important;
+      font-weight: 400;
     }
 
     .auth0-lock-input::placeholder {
       color: #888 !important;
+      font-weight: 400;
     }
 
     /* Input icons styling */
     .auth0-lock-input-wrap .auth0-lock-input-icon {
-      color: #ff69b4 !important;
+      color: #7A288A !important;
     }
 
     .auth0-lock-submit {
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%) !important;
+      background: linear-gradient(135deg, #7A288A 0%, #F8BBD9 100%) !important;
       border: none !important;
-      border-radius: 50px !important;
+      border-radius: 16px !important;
       font-size: 1.1rem !important;
       font-weight: 600 !important;
-      padding: 18px 36px !important;
-      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3) !important;
+      padding: 20px 40px !important;
+      box-shadow: 0 8px 25px rgba(122, 40, 138, 0.3) !important;
       transition: all 0.3s ease !important;
+      color: white !important;
+      text-transform: none !important;
+      letter-spacing: 0.5px !important;
     }
 
     .auth0-lock-submit:hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 35px rgba(122, 40, 138, 0.4) !important;
+      background: linear-gradient(135deg, #8A3898 0%, #F8BBD9 100%) !important;
     }
 
     /* Social Login Buttons - Google */
     .auth0-lock-social-button[data-provider="google-oauth2"] {
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%) !important;
-      border: 2px solid #ff69b4 !important;
-      border-radius: 15px !important;
+      background: linear-gradient(135deg, #7A288A 0%, #F8BBD9 100%) !important;
+      border: 1px solid rgba(122, 40, 138, 0.3) !important;
+      border-radius: 16px !important;
       font-size: 1rem !important;
       font-weight: 600 !important;
-      padding: 18px 24px !important;
-      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3) !important;
+      padding: 20px 24px !important;
+      box-shadow: 0 8px 25px rgba(122, 40, 138, 0.2) !important;
       transition: all 0.3s ease !important;
       color: white !important;
       text-transform: none !important;
@@ -153,28 +235,28 @@
     }
 
     .auth0-lock-social-button[data-provider="google-oauth2"]:hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 12px 35px rgba(255, 105, 180, 0.5) !important;
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 35px rgba(122, 40, 138, 0.3) !important;
+      background: linear-gradient(135deg, #8A3898 0%, #F8BBD9 100%) !important;
     }
 
     .auth0-lock-social-button[data-provider="google-oauth2"]:before {
       content: "🔍" !important;
-      margin-right: 10px !important;
+      margin-right: 12px !important;
       font-size: 1.2rem !important;
     }
 
     /* Social Login Buttons - Twitter */
     .auth0-lock-social-button[data-provider="twitter"] {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
-      border: 2px solid #ff69b4 !important;
-      border-radius: 15px !important;
+      background: rgba(20, 20, 20, 0.8) !important;
+      border: 1px solid rgba(122, 40, 138, 0.3) !important;
+      border-radius: 16px !important;
       font-size: 1rem !important;
       font-weight: 600 !important;
-      padding: 18px 24px !important;
-      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2) !important;
+      padding: 20px 24px !important;
+      box-shadow: 0 8px 25px rgba(122, 40, 138, 0.1) !important;
       transition: all 0.3s ease !important;
-      color: #ff69b4 !important;
+      color: #7A288A !important;
       text-transform: none !important;
       letter-spacing: 0.5px !important;
       position: relative !important;
@@ -182,27 +264,28 @@
     }
 
     .auth0-lock-social-button[data-provider="twitter"]:hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 12px 35px rgba(255, 105, 180, 0.4) !important;
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 35px rgba(122, 40, 138, 0.2) !important;
+      background: linear-gradient(135deg, #7A288A 0%, #F8BBD9 100%) !important;
       color: white !important;
+      border-color: #7A288A !important;
     }
 
     .auth0-lock-social-button[data-provider="twitter"]:before {
       content: "🐦" !important;
-      margin-right: 10px !important;
+      margin-right: 12px !important;
       font-size: 1.2rem !important;
     }
 
     /* Generic social button fallback */
     .auth0-lock-social-button:not([data-provider="google-oauth2"]):not([data-provider="twitter"]) {
-      background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%) !important;
-      border: 2px solid #ff69b4 !important;
-      border-radius: 15px !important;
+      background: linear-gradient(135deg, #7A288A 0%, #F8BBD9 100%) !important;
+      border: 1px solid rgba(122, 40, 138, 0.3) !important;
+      border-radius: 16px !important;
       font-size: 1rem !important;
       font-weight: 600 !important;
-      padding: 18px 24px !important;
-      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3) !important;
+      padding: 20px 24px !important;
+      box-shadow: 0 8px 25px rgba(122, 40, 138, 0.2) !important;
       transition: all 0.3s ease !important;
       color: white !important;
       text-transform: none !important;
@@ -210,29 +293,31 @@
     }
 
     .auth0-lock-social-button:not([data-provider="google-oauth2"]):not([data-provider="twitter"]):hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 12px 35px rgba(255, 105, 180, 0.5) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 35px rgba(122, 40, 138, 0.3) !important;
     }
 
     .auth0-lock-alternative {
-      color: #ccc !important;
+      color: #B8B8B8 !important;
     }
 
     .auth0-lock-alternative a {
-      color: #ff69b4 !important;
+      color: #7A288A !important;
       text-decoration: none !important;
+      font-weight: 500;
     }
 
     .auth0-lock-alternative a:hover {
-      color: #7a288a !important;
+      color: #F8BBD9 !important;
     }
 
     /* Divider styling */
     .auth0-lock-separator {
-      color: #666 !important;
-      margin: 25px 0 !important;
+      color: #888 !important;
+      margin: 32px 0 !important;
       font-size: 0.9rem !important;
       position: relative !important;
+      font-weight: 500;
     }
 
     .auth0-lock-separator:before {
@@ -242,13 +327,13 @@
       left: 0 !important;
       right: 0 !important;
       height: 1px !important;
-      background: linear-gradient(90deg, transparent 0%, #444 50%, transparent 100%) !important;
+      background: linear-gradient(90deg, transparent 0%, rgba(122, 40, 138, 0.3) 50%, transparent 100%) !important;
       z-index: 1 !important;
     }
 
     .auth0-lock-separator span {
-      background: rgba(0, 0, 0, 0.8) !important;
-      padding: 0 20px !important;
+      background: rgba(0, 0, 0, 0.85) !important;
+      padding: 0 24px !important;
       position: relative !important;
       z-index: 2 !important;
     }
@@ -310,15 +395,17 @@
     .security-note {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       color: #888;
-      font-size: 0.8rem;
-      margin-top: 20px;
+      font-size: 0.85rem;
+      margin-top: 32px;
       justify-content: center;
+      font-weight: 400;
     }
 
     .security-note::before {
       content: "🔒";
+      font-size: 1rem;
     }
 
     @media (max-width: 480px) {
@@ -339,6 +426,7 @@
 </head>
 <body>
   <div class="background-pattern"></div>
+  <div class="floating-elements"></div>
   
   <div class="login-container">
     <div class="logo">Velour</div>
@@ -401,7 +489,7 @@
       languageBaseUrl: config.languageBaseUrl,
       languageDictionary: languageDictionary,
       theme: {
-        primaryColor: '#ff69b4',
+        primaryColor: '#7A288A',
         logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMjAiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik0yMCAxMEMxNi42ODYzIDEwIDE0IDEyLjY4NjMgMTQgMTZDMTRfMTkuMzEzNyAxNi42ODYzIDIyIDE5LjMxMzcgMjIgMjJDMjIgMjQuNjg2MyAxOS4zMTM3IDI3IDE2IDI3QzEyLjY4NjMgMjcgMTAgMjQuNjg2MyAxMCAyMUwyMCAxMFoiIGZpbGw9IndoaXRlIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSI0MCIgeTI9IjQwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGRjY5QjQiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjN0EyODhBIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+'
       },
       prefill: loginHint ? { email: loginHint, username: loginHint } : null,
