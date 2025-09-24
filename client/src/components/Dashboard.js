@@ -38,8 +38,10 @@ import { useStripe } from '../contexts/StripeContext';
 import { dashboardService } from '../services/dashboardService';
 import { useWelcomeMessage } from '../hooks/useWelcomeMessage';
 import { useAgeVerification } from '../hooks/useAgeVerification';
+import { useOnboarding } from '../hooks/useOnboarding';
 import WelcomeMessage from './WelcomeMessage';
 import AgeVerification from './AgeVerification';
+import OnboardingFlow from './OnboardingFlow';
 import NotificationsTab from './NotificationsTab';
 import MessagesTab from './MessagesTab';
 import CollectionsTab from './CollectionsTab';
@@ -527,6 +529,7 @@ const Dashboard = () => {
     isVerified,
     verificationStatus 
   } = useAgeVerification(user, isAuthenticated);
+  const { showOnboarding, userType, completeOnboarding, skipOnboarding } = useOnboarding(user, isAuthenticated);
   const [activeTab, setActiveTab] = useState('home');
   const [subscriptions, setSubscriptions] = useState([]);
   const [analytics, setAnalytics] = useState({});
@@ -947,6 +950,13 @@ const Dashboard = () => {
           window.location.reload();
         }}
       />
+      <OnboardingFlow 
+        isOpen={showOnboarding} 
+        onClose={skipOnboarding} 
+        user={user}
+        userType={userType}
+        onUserTypeSelect={completeOnboarding}
+      />
       
       {/* Mobile Header */}
       <MobileHeader>
@@ -997,7 +1007,7 @@ const Dashboard = () => {
           ))}
         </Navigation>
 
-        <NewPostButton>
+        <NewPostButton onClick={() => handleTabChange('vault')}>
           <Plus size={16} />
           NEW POST
         </NewPostButton>
@@ -1020,7 +1030,7 @@ const Dashboard = () => {
               <SearchInput placeholder="Search..." />
             </SearchBar>
             
-            <ActionButton>
+            <ActionButton onClick={() => handleTabChange('profile')}>
               <Settings size={16} />
               Settings
             </ActionButton>
