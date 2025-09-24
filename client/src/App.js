@@ -12,6 +12,9 @@ import Dashboard from './components/Dashboard';
 import HomePage from './components/HomePage';
 import VideoRoom from './components/VideoRoom';
 import SupportPage from './components/SupportPage';
+import CreatorsPage from './components/CreatorsPage';
+import TermsPage from './components/TermsPage';
+import PrivacyPage from './components/PrivacyPage';
 import NotificationPrompt from './components/NotificationPrompt';
 import './App.css';
 
@@ -112,6 +115,9 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/room/:roomId" element={<VideoRoom />} />
                 <Route path="/support" element={<SupportPage />} />
+                <Route path="/creators" element={<CreatorsPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
                 
                 {/* Auth routes */}
                 <Route 
