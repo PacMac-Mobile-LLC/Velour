@@ -1,8 +1,6 @@
-const CACHE_NAME = 'velour-v1';
+const CACHE_NAME = 'velour-v2';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json'
 ];
 
@@ -19,6 +17,12 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
+  // Skip caching for static assets with hashes (JS/CSS files)
+  if (event.request.url.includes('/static/') && 
+      (event.request.url.includes('.js') || event.request.url.includes('.css'))) {
+    return fetch(event.request);
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
