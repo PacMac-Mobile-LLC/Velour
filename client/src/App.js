@@ -11,6 +11,7 @@ import Auth0Login from './components/Auth0Login';
 import Dashboard from './components/Dashboard';
 import HomePage from './components/HomePage';
 import VideoRoom from './components/VideoRoom';
+import SupportPage from './components/SupportPage';
 import NotificationPrompt from './components/NotificationPrompt';
 import './App.css';
 
@@ -87,6 +88,7 @@ function App() {
                 {/* Public routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/room/:roomId" element={<VideoRoom />} />
+                <Route path="/support" element={<SupportPage />} />
                 
                 {/* Auth routes */}
                 <Route 

@@ -428,6 +428,193 @@ const FooterText = styled.p`
   font-size: 0.9rem;
 `;
 
+// New sections styling
+const InfoSection = styled.div`
+  background: #111;
+  padding: 100px 20px;
+`;
+
+const InfoContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const InfoTitle = styled.h2`
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+const InfoSubtitle = styled.p`
+  font-size: 1.2rem;
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 60px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+`;
+
+const InfoContent = styled.div`
+  color: #ccc;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+`;
+
+const InfoCard = styled.div`
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid #333;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #ff69b4;
+    transform: translateY(-5px);
+  }
+`;
+
+const InfoCardTitle = styled.h3`
+  color: white;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const InfoCardContent = styled.p`
+  color: #ccc;
+  line-height: 1.6;
+`;
+
+const CreatorBenefits = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+`;
+
+const BenefitItem = styled.div`
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #333;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #ff69b4;
+    transform: translateY(-5px);
+  }
+`;
+
+const BenefitIcon = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff69b4 0%, #7a288a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: white;
+  font-size: 1.5rem;
+`;
+
+const BenefitTitle = styled.h4`
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+`;
+
+const BenefitDescription = styled.p`
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+`;
+
+const PolicySection = styled.div`
+  background: #000;
+  padding: 100px 20px;
+`;
+
+const PolicyContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+const PolicyContent = styled.div`
+  color: #ccc;
+  line-height: 1.8;
+  font-size: 1rem;
+`;
+
+const PolicySectionTitle = styled.h3`
+  color: white;
+  font-size: 1.5rem;
+  margin: 40px 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const PolicyList = styled.ul`
+  color: #ccc;
+  line-height: 1.8;
+  margin: 20px 0;
+  padding-left: 20px;
+`;
+
+const PolicyListItem = styled.li`
+  margin-bottom: 10px;
+`;
+
+const ContactInfo = styled.div`
+  background: rgba(255, 105, 180, 0.1);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  margin: 40px 0;
+  text-align: center;
+`;
+
+const ContactTitle = styled.h3`
+  color: #ff69b4;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+`;
+
+const ContactText = styled.p`
+  color: #ccc;
+  margin-bottom: 10px;
+`;
+
+const ContactEmail = styled.a`
+  color: #ff69b4;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    color: #7a288a;
+  }
+`;
+
 const HomePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0Context();
@@ -587,18 +774,292 @@ const HomePage = () => {
 
       <PricingPlans />
 
+      {/* About Section */}
+      <InfoSection id="about">
+        <InfoContainer>
+          <InfoTitle>About Velour</InfoTitle>
+          <InfoSubtitle>
+            The ultimate platform connecting creators with their most passionate fans
+          </InfoSubtitle>
+          <InfoContent>
+            <p>
+              Velour is more than just a subscription platform – it's a community where creators can build meaningful relationships with their audience while monetizing their content. We believe that creators deserve to be compensated fairly for their work, and fans deserve exclusive access to the content they love.
+            </p>
+            <p>
+              Founded in 2024, Velour has quickly become the go-to platform for creators across various industries. From artists and musicians to educators and entertainers, our platform provides the tools and support needed to build a sustainable creative business.
+            </p>
+          </InfoContent>
+          
+          <InfoGrid>
+            <InfoCard>
+              <InfoCardTitle>
+                <span>🎯</span>
+                Our Mission
+              </InfoCardTitle>
+              <InfoCardContent>
+                To empower creators to build sustainable businesses while providing fans with exclusive access to the content they love most.
+              </InfoCardContent>
+            </InfoCard>
+            
+            <InfoCard>
+              <InfoCardTitle>
+                <span>💡</span>
+                Our Vision
+              </InfoCardTitle>
+              <InfoCardContent>
+                A world where creativity is valued, creators are fairly compensated, and fans have direct access to the content that inspires them.
+              </InfoCardContent>
+            </InfoCard>
+            
+            <InfoCard>
+              <InfoCardTitle>
+                <span>🤝</span>
+                Our Values
+              </InfoCardTitle>
+              <InfoCardContent>
+                Transparency, fairness, creativity, and community. We're committed to building a platform that benefits everyone.
+              </InfoCardContent>
+            </InfoCard>
+          </InfoGrid>
+        </InfoContainer>
+      </InfoSection>
+
+      {/* Creators Section */}
+      <InfoSection id="creators">
+        <InfoContainer>
+          <InfoTitle>For Creators</InfoTitle>
+          <InfoSubtitle>
+            Everything you need to build a successful creator business and connect with your audience
+          </InfoSubtitle>
+          <InfoContent>
+            <p>
+              Whether you're just starting out or you're an established creator looking for a new platform, Velour provides all the tools you need to succeed. Our platform is designed to help you build a sustainable business while maintaining creative control over your content.
+            </p>
+          </InfoContent>
+          
+          <CreatorBenefits>
+            <BenefitItem>
+              <BenefitIcon>💰</BenefitIcon>
+              <BenefitTitle>Flexible Pricing</BenefitTitle>
+              <BenefitDescription>
+                Set your own subscription prices and offer different tiers to maximize your revenue potential.
+              </BenefitDescription>
+            </BenefitItem>
+            
+            <BenefitItem>
+              <BenefitIcon>📊</BenefitIcon>
+              <BenefitTitle>Analytics Dashboard</BenefitTitle>
+              <BenefitDescription>
+                Track your performance with detailed analytics and insights about your audience and revenue.
+              </BenefitDescription>
+            </BenefitItem>
+            
+            <BenefitItem>
+              <BenefitIcon>💬</BenefitIcon>
+              <BenefitTitle>Direct Messaging</BenefitTitle>
+              <BenefitDescription>
+                Build personal connections with your subscribers through our integrated messaging system.
+              </BenefitDescription>
+            </BenefitItem>
+            
+            <BenefitItem>
+              <BenefitIcon>🎨</BenefitIcon>
+              <BenefitTitle>Content Freedom</BenefitTitle>
+              <BenefitDescription>
+                Share photos, videos, live streams, and written content without restrictions or censorship.
+              </BenefitDescription>
+            </BenefitItem>
+            
+            <BenefitItem>
+              <BenefitIcon>🔒</BenefitIcon>
+              <BenefitTitle>Secure Payments</BenefitTitle>
+              <BenefitDescription>
+                Get paid securely and on time with our reliable payment processing system powered by Stripe.
+              </BenefitDescription>
+            </BenefitItem>
+            
+            <BenefitItem>
+              <BenefitIcon>🚀</BenefitIcon>
+              <BenefitTitle>Growth Tools</BenefitTitle>
+              <BenefitDescription>
+                Access marketing tools, promotional features, and growth strategies to expand your audience.
+              </BenefitDescription>
+            </BenefitItem>
+          </CreatorBenefits>
+          
+          <ContactInfo>
+            <ContactTitle>Ready to Start Creating?</ContactTitle>
+            <ContactText>
+              Join thousands of creators who are already building their businesses on Velour.
+            </ContactText>
+            <ContactText>
+              Have questions? Contact our creator support team at{' '}
+              <ContactEmail href="mailto:creators@vibecodes.space">
+                creators@vibecodes.space
+              </ContactEmail>
+            </ContactText>
+          </ContactInfo>
+        </InfoContainer>
+      </InfoSection>
+
+      {/* Privacy Policy Section */}
+      <PolicySection id="privacy">
+        <PolicyContainer>
+          <InfoTitle>Privacy Policy</InfoTitle>
+          <InfoSubtitle>
+            Your privacy is important to us. Here's how we protect and use your information.
+          </InfoSubtitle>
+          
+          <PolicyContent>
+            <PolicySectionTitle>
+              <span>📋</span>
+              Information We Collect
+            </PolicySectionTitle>
+            <p>
+              We collect information you provide directly to us, such as when you create an account, subscribe to a creator, or contact us for support. This may include your name, email address, payment information, and content you create or share.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>🔒</span>
+              How We Use Your Information
+            </PolicySectionTitle>
+            <PolicyList>
+              <PolicyListItem>To provide, maintain, and improve our services</PolicyListItem>
+              <PolicyListItem>To process transactions and send related information</PolicyListItem>
+              <PolicyListItem>To send technical notices and support messages</PolicyListItem>
+              <PolicyListItem>To respond to your comments and questions</PolicyListItem>
+              <PolicyListItem>To protect against fraud and abuse</PolicyListItem>
+            </PolicyList>
+            
+            <PolicySectionTitle>
+              <span>🛡️</span>
+              Information Security
+            </PolicySectionTitle>
+            <p>
+              We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. Your payment information is processed securely through Stripe and is never stored on our servers.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>🍪</span>
+              Cookies and Tracking
+            </PolicySectionTitle>
+            <p>
+              We use cookies and similar technologies to enhance your experience, analyze usage patterns, and provide personalized content. You can control cookie settings through your browser preferences.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>📞</span>
+              Contact Us
+            </PolicySectionTitle>
+            <p>
+              If you have any questions about this Privacy Policy, please contact us at{' '}
+              <ContactEmail href="mailto:privacy@vibecodes.space">
+                privacy@vibecodes.space
+              </ContactEmail>
+            </p>
+            
+            <p style={{ marginTop: '40px', fontSize: '0.9rem', color: '#888' }}>
+              Last updated: December 2024
+            </p>
+          </PolicyContent>
+        </PolicyContainer>
+      </PolicySection>
+
+      {/* Terms of Service Section */}
+      <PolicySection id="terms">
+        <PolicyContainer>
+          <InfoTitle>Terms of Service</InfoTitle>
+          <InfoSubtitle>
+            Please read these terms carefully before using our platform.
+          </InfoSubtitle>
+          
+          <PolicyContent>
+            <PolicySectionTitle>
+              <span>📝</span>
+              Acceptance of Terms
+            </PolicySectionTitle>
+            <p>
+              By accessing or using Velour, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using this platform.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>👤</span>
+              User Accounts
+            </PolicySectionTitle>
+            <p>
+              You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must provide accurate and complete information when creating your account.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>🎨</span>
+              Content Guidelines
+            </PolicySectionTitle>
+            <PolicyList>
+              <PolicyListItem>Content must be original or you must have proper rights to share it</PolicyListItem>
+              <PolicyListItem>No illegal, harmful, or offensive content</PolicyListItem>
+              <PolicyListItem>No spam, harassment, or abuse of other users</PolicyListItem>
+              <PolicyListItem>No impersonation of other individuals or entities</PolicyListItem>
+              <PolicyListItem>Respect intellectual property rights</PolicyListItem>
+            </PolicyList>
+            
+            <PolicySectionTitle>
+              <span>💳</span>
+              Payments and Subscriptions
+            </PolicySectionTitle>
+            <p>
+              Subscription fees are charged in advance and are non-refundable except as required by law. You can cancel your subscription at any time, and you'll continue to have access until the end of your current billing period.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>⚖️</span>
+              Intellectual Property
+            </PolicySectionTitle>
+            <p>
+              You retain ownership of the content you create and share on Velour. By using our platform, you grant us a license to display, distribute, and promote your content as necessary to provide our services.
+            </p>
+            
+            <PolicySectionTitle>
+              <span>🚫</span>
+              Prohibited Uses
+            </PolicySectionTitle>
+            <PolicyList>
+              <PolicyListItem>Violating any applicable laws or regulations</PolicyListItem>
+              <PolicyListItem>Infringing on intellectual property rights</PolicyListItem>
+              <PolicyListItem>Transmitting harmful or malicious code</PolicyListItem>
+              <PolicyListItem>Attempting to gain unauthorized access to our systems</PolicyListItem>
+              <PolicyListItem>Interfering with the proper functioning of the platform</PolicyListItem>
+            </PolicyList>
+            
+            <PolicySectionTitle>
+              <span>📞</span>
+              Contact Information
+            </PolicySectionTitle>
+            <p>
+              For questions about these Terms of Service, please contact us at{' '}
+              <ContactEmail href="mailto:legal@vibecodes.space">
+                legal@vibecodes.space
+              </ContactEmail>
+            </p>
+            
+            <p style={{ marginTop: '40px', fontSize: '0.9rem', color: '#888' }}>
+              Last updated: December 2024
+            </p>
+          </PolicyContent>
+        </PolicyContainer>
+      </PolicySection>
+
       <Footer>
         <FooterContent>
           <FooterLinks>
             <FooterLink href="#about">About</FooterLink>
             <FooterLink href="#creators">Creators</FooterLink>
-            <FooterLink href="#support">Support</FooterLink>
+            <FooterLink href="/support">Support</FooterLink>
             <FooterLink href="#privacy">Privacy</FooterLink>
             <FooterLink href="#terms">Terms</FooterLink>
-            <FooterLink href="mailto:support@velour.com">Contact</FooterLink>
+            <FooterLink href="mailto:support@vibecodes.space">Contact</FooterLink>
           </FooterLinks>
           <FooterText>
-            © 2024 Velour. All rights reserved. | support@velour.com
+            © 2024 Velour. All rights reserved. | support@vibecodes.space
           </FooterText>
         </FooterContent>
       </Footer>
