@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth0Context } from '../contexts/Auth0Context';
 import { useStripe } from '../contexts/StripeContext';
 import styled from 'styled-components';
 import { 
@@ -231,7 +231,8 @@ const ActionText = styled.span`
 `;
 
 const Dashboard = () => {
-  const { user, isCreator } = useAuth();
+  const { user } = useAuth0Context();
+  const isCreator = user?.role === 'creator';
   const { getAnalytics, getSubscriptions } = useStripe();
   const [analytics, setAnalytics] = useState(null);
   const [subscriptions, setSubscriptions] = useState([]);

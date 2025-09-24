@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone, Video, MessageSquare, Star, Play, Eye, Lock, Crown, Zap, Shield, Globe } from 'lucide-react';
 import styled from 'styled-components';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth0Context } from '../contexts/Auth0Context';
 import Logo from './Logo';
 
 const Container = styled.div`
@@ -496,7 +496,7 @@ const FooterText = styled.p`
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth0Context();
 
   const features = [
     {
