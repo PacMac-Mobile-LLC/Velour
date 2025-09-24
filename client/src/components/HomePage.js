@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, Plus, ArrowRight, Users, ExternalLink, Calendar, DollarSign, Phone, Video, MessageSquare, Star, Play, Eye, Lock, Crown, Zap, Shield, Globe } from 'lucide-react';
 import styled from 'styled-components';
 import { useAuth0Context } from '../contexts/Auth0Context';
+import { useAuth0 } from '@auth0/auth0-react';
 import Logo from './Logo';
 
 const Container = styled.div`
@@ -497,6 +498,7 @@ const FooterText = styled.p`
 const HomePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0Context();
+  const { loginWithRedirect } = useAuth0();
 
   const features = [
     {
@@ -592,11 +594,11 @@ const HomePage = () => {
           </HeroSubtitle>
           
           <CTAButtons>
-            <PrimaryButton onClick={() => navigate('/auth')}>
+            <PrimaryButton onClick={() => loginWithRedirect()}>
               <Plus size={20} />
               Start Creating
             </PrimaryButton>
-            <SecondaryButton onClick={() => navigate('/auth')}>
+            <SecondaryButton onClick={() => loginWithRedirect()}>
               <Heart size={20} />
               Browse Creators
             </SecondaryButton>
@@ -693,7 +695,7 @@ const HomePage = () => {
                     </PricingFeature>
                   ))}
                 </PricingFeatures>
-                <PrimaryButton style={{ width: '100%' }}>
+                <PrimaryButton style={{ width: '100%' }} onClick={() => loginWithRedirect()}>
                   Get Started
                 </PrimaryButton>
               </PricingCard>
