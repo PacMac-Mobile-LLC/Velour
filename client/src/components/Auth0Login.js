@@ -155,11 +155,8 @@ const Auth0Login = () => {
     error 
   } = useAuth0();
 
-  const handleTwitterLogin = () => {
-    loginWithRedirect({
-      connection: 'twitter',
-      prompt: 'login'
-    });
+  const handleLogin = () => {
+    loginWithRedirect();
   };
 
   const handleLogout = () => {
@@ -188,9 +185,9 @@ const Auth0Login = () => {
           <ErrorMessage>
             Authentication Error: {error.message}
           </ErrorMessage>
-          <TwitterButton onClick={handleTwitterLogin}>
+          <TwitterButton onClick={handleLogin}>
             <Twitter size={20} />
-            Try Again with Twitter
+            Try Again
           </TwitterButton>
         </AuthCard>
       </AuthContainer>
@@ -230,7 +227,7 @@ const Auth0Login = () => {
           Sign in with Twitter to access exclusive content and connect with creators
         </Subtitle>
 
-        <TwitterButton onClick={handleTwitterLogin}>
+        <TwitterButton onClick={handleLogin}>
           <Twitter size={20} />
           Continue with Twitter
         </TwitterButton>

@@ -6,7 +6,9 @@ export const auth0Config = {
     redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin,
     audience: process.env.REACT_APP_AUTH0_AUDIENCE,
     scope: 'openid profile email'
-  }
+  },
+  useRefreshTokens: true,
+  cacheLocation: 'localstorage'
 };
 
 // Twitter (X) connection configuration
