@@ -15,6 +15,7 @@ const io = socketIo(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' ? [
       "https://vibecodes.space",
+      "https://www.vibecodes.space",
       "https://velour-wxv9.onrender.com",
       process.env.FRONTEND_URL
     ].filter(Boolean) : "http://localhost:3000",
@@ -63,6 +64,7 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? [
         "https://vibecodes.space",
+        "https://www.vibecodes.space",
         "https://velour-wxv9.onrender.com",
         process.env.FRONTEND_URL
       ].filter(Boolean)
