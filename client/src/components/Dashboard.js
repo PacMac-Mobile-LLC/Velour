@@ -39,6 +39,7 @@ import { dashboardService } from '../services/dashboardService';
 import { useWelcomeMessage } from '../hooks/useWelcomeMessage';
 import { useAgeVerification } from '../hooks/useAgeVerification';
 import { useOnboarding } from '../hooks/useOnboarding';
+import { debugApi } from '../utils/debugApi';
 import WelcomeMessage from './WelcomeMessage';
 import AgeVerification from './AgeVerification';
 import OnboardingFlow from './OnboardingFlow';
@@ -562,6 +563,9 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    // Debug API configuration
+    debugApi();
+    
     const loadDashboardData = async () => {
       try {
         setLoading(true);
