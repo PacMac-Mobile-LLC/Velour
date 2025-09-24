@@ -492,7 +492,9 @@ const HomePage = () => {
               console.log('Start Creating button clicked');
               console.log('loginWithRedirect function:', loginWithRedirect);
               try {
-                loginWithRedirect();
+                loginWithRedirect({
+                  appState: { returnTo: '/dashboard' }
+                });
               } catch (error) {
                 console.error('Error calling loginWithRedirect:', error);
               }
@@ -504,7 +506,9 @@ const HomePage = () => {
               console.log('Browse Creators button clicked');
               console.log('loginWithRedirect function:', loginWithRedirect);
               try {
-                loginWithRedirect();
+                loginWithRedirect({
+                  appState: { returnTo: '/dashboard' }
+                });
               } catch (error) {
                 console.error('Error calling loginWithRedirect:', error);
               }

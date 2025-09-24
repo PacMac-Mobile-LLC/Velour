@@ -59,7 +59,7 @@ const PublicRoute = ({ children }) => {
     );
   }
   
-  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+  return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
 };
 
 function App() {
@@ -74,6 +74,10 @@ function App() {
         domain={auth0Config.domain}
         clientId={auth0Config.clientId}
         authorizationParams={auth0Config.authorizationParams}
+        onRedirectCallback={(appState) => {
+          // Redirect to dashboard after successful login
+          window.location.replace(appState?.returnTo || '/dashboard');
+        }}
       >
         <Auth0ContextProvider>
           <StripeProvider>

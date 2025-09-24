@@ -156,7 +156,9 @@ const Auth0Login = () => {
   } = useAuth0();
 
   const handleLogin = () => {
-    loginWithRedirect();
+    loginWithRedirect({
+      appState: { returnTo: '/dashboard' }
+    });
   };
 
   const handleLogout = () => {
