@@ -565,7 +565,7 @@ const QueueTab = () => {
   const loadQueueItems = async () => {
     try {
       setLoading(true);
-      const result = await dashboardService.getQueue();
+      const result = await queueService.getQueueItems();
       
       if (result.success) {
         setQueueItems(result.data || []);
@@ -668,7 +668,7 @@ const QueueTab = () => {
 
   const createQueueItem = async () => {
     try {
-      const result = await dashboardService.createQueueItem(newItem);
+      const result = await queueService.createQueueItem(newItem);
 
       if (result.success) {
         const item = {
@@ -719,8 +719,12 @@ const QueueTab = () => {
 
   const deleteQueueItem = async (itemId) => {
     try {
-      // In a real app, call API to delete
-      setQueueItems(prev => prev.filter(item => item.id !== itemId));
+      const result = await queueService.deleteQueueItem(itemId);
+      if (result.success) {
+        setQueueItems(prev => prev.filter(item => item.id !== itemId));
+      } else {
+        console.error('Failed to delete queue item:', result.message);
+      }
     } catch (error) {
       console.error('Error deleting queue item:', error);
     }
