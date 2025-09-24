@@ -3,7 +3,7 @@ export const auth0Config = {
   domain: process.env.REACT_APP_AUTH0_DOMAIN || 'vibecodes.us.auth0.com',
   clientId: process.env.REACT_APP_AUTH0_CLIENT_ID || 'ed0G8cJCBxwo0pgYuvFHIJ7tRn51w0kj',
   authorizationParams: {
-    redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin,
+    redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI || 'https://www.vibecodes.space',
     audience: process.env.REACT_APP_AUTH0_AUDIENCE,
     scope: 'openid profile email'
   },
@@ -17,3 +17,4 @@ export const twitterConfig = {
   login_hint: 'twitter'
 };
 // Force redeploy - Tue Sep 23 21:35:45 CDT 2025
+// Fix Auth0 redirect URI - Wed Sep 24 04:30:00 CDT 2025
