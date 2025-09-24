@@ -38,6 +38,8 @@ import { useWelcomeMessage } from '../hooks/useWelcomeMessage';
 import { useAgeVerification } from '../hooks/useAgeVerification';
 import WelcomeMessage from './WelcomeMessage';
 import AgeVerification from './AgeVerification';
+import NotificationsTab from './NotificationsTab';
+import MessagesTab from './MessagesTab';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -706,38 +708,10 @@ const Dashboard = () => {
         );
       
       case 'notifications':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <Bell size={20} />
-              Notifications
-            </SectionTitle>
-            <SectionContent>
-              <p>Track your likes, comments, follows, and subscriber activity here.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <Bell size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Notifications system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <NotificationsTab />;
       
       case 'messages':
-        return (
-          <ContentSection>
-            <SectionTitle>
-              <MessageCircle size={20} />
-              Messages
-            </SectionTitle>
-            <SectionContent>
-              <p>Connect with your paid subscribers through direct messaging.</p>
-              <div style={{ marginTop: '20px', textAlign: 'center', padding: '40px', color: '#888' }}>
-                <MessageCircle size={48} style={{ marginBottom: '20px', opacity: 0.5 }} />
-                <p>Messaging system coming soon!</p>
-              </div>
-            </SectionContent>
-          </ContentSection>
-        );
+        return <MessagesTab />;
       
       case 'collections':
         return (
