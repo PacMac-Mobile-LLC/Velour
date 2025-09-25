@@ -212,6 +212,128 @@ app.use('/api/vault', vaultRoutes);
 app.use('/api/statements', statementRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
+// Redirect subscriptions to payments route
+app.get('/api/subscriptions', authenticateToken, async (req, res) => {
+  try {
+    const user = req.user;
+    
+    const subscriptions = await Subscription.find({
+      subscriber: user._id
+    }).populate('creator', 'username profile creatorSettings');
+    
+    res.json({
+      success: true,
+      data: subscriptions.map(sub => ({
+        id: sub._id,
+        creatorId: sub.creator._id,
+        creator: {
+          id: sub.creator._id,
+          username: sub.creator.username,
+          profile: sub.creator.profile,
+          creatorSettings: sub.creator.creatorSettings
+        },
+        status: sub.status,
+        plan: sub.plan,
+        billing: sub.billing,
+        periods: sub.periods,
+        createdAt: sub.createdAt.toISOString().split('T')[0]
+      }))
+    });
+  } catch (error) {
+    console.error('Get subscriptions error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get subscriptions'
+    });
+  }
+});
+
+// Notifications endpoint
+app.get('/api/notifications', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { page = 1, limit = 20 } = req.query;
+
+    // Mock notifications for now
+    const mockNotifications = [
+      {
+        id: '1',
+        type: 'new_follower',
+        title: 'New Follower',
+        message: 'Sarah started following you',
+        isRead: false,
+        createdAt: new Date().toISOString().split('T')[0]
+      },
+      {
+        id: '2',
+        type: 'new_like',
+        title: 'New Like',
+        message: 'Mike liked your post',
+        isRead: false,
+        createdAt: new Date().toISOString().split('T')[0]
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: mockNotifications,
+      pagination: {
+        current: parseInt(page),
+        pages: 1,
+        total: mockNotifications.length
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch notifications'
+    });
+  }
+});
+
+// Recommended creators endpoint
+app.get('/api/creators/recommended', authenticateToken, async (req, res) => {
+  try {
+    const { limit = 10 } = req.query;
+
+    // Mock recommended creators for now
+    const mockCreators = [
+      {
+        id: '1',
+        name: 'Sarah',
+        handle: 'sarah_fitness',
+        avatar: 'S',
+        bio: 'Fitness enthusiast and wellness coach',
+        isOnline: true,
+        followerCount: 1250,
+        isFollowing: false
+      },
+      {
+        id: '2',
+        name: 'Mike',
+        handle: 'mike_creative',
+        avatar: 'M',
+        bio: 'Creative content creator',
+        isOnline: false,
+        followerCount: 890,
+        isFollowing: false
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: mockCreators.slice(0, parseInt(limit))
+    });
+  } catch (error) {
+    console.error('Error fetching recommended creators:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch recommended creators'
+    });
+  }
+});
+
 // Dashboard stats endpoint
 app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   try {
