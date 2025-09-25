@@ -13,3 +13,6 @@
 /privacy      /index.html   200
 /auth         /index.html   200
 /room/*       /index.html   200
+
+# Force HTTPS redirects
+https://vibecodes.space/* https://www.vibecodes.space/:splat 301!

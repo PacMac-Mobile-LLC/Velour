@@ -36,6 +36,7 @@ services:
     env: static
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: ./client/build
+    pullRequestPreviewsEnabled: false
     envVars:
       - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
         sync: false
