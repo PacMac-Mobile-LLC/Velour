@@ -241,6 +241,117 @@ const userSchema = new mongoose.Schema({
   posts: {
     type: Number,
     default: 0
+  },
+  // AI Matching Preferences
+  matchingPreferences: {
+    // Content interests
+    contentInterests: [{
+      type: String,
+      enum: [
+        'fitness', 'art', 'music', 'photography', 'travel', 'food', 'fashion',
+        'technology', 'gaming', 'sports', 'education', 'business', 'lifestyle',
+        'beauty', 'comedy', 'dance', 'writing', 'crafts', 'nature', 'pets'
+      ]
+    }],
+    // Personality traits (1-5 scale)
+    personalityTraits: {
+      outgoing: { type: Number, min: 1, max: 5, default: 3 },
+      creative: { type: Number, min: 1, max: 5, default: 3 },
+      adventurous: { type: Number, min: 1, max: 5, default: 3 },
+      intellectual: { type: Number, min: 1, max: 5, default: 3 },
+      romantic: { type: Number, min: 1, max: 5, default: 3 },
+      humorous: { type: Number, min: 1, max: 5, default: 3 },
+      supportive: { type: Number, min: 1, max: 5, default: 3 },
+      ambitious: { type: Number, min: 1, max: 5, default: 3 }
+    },
+    // Relationship preferences
+    relationshipGoals: [{
+      type: String,
+      enum: ['friendship', 'dating', 'casual', 'serious', 'networking', 'collaboration']
+    }],
+    // Age preferences
+    ageRange: {
+      min: { type: Number, min: 18, max: 100, default: 18 },
+      max: { type: Number, min: 18, max: 100, default: 100 }
+    },
+    // Location preferences
+    locationPreferences: {
+      nearby: { type: Boolean, default: true },
+      sameCountry: { type: Boolean, default: true },
+      international: { type: Boolean, default: false },
+      maxDistance: { type: Number, default: 50 } // in miles/km
+    },
+    // Activity preferences
+    activityPreferences: [{
+      type: String,
+      enum: [
+        'video_calls', 'voice_calls', 'text_chat', 'live_streaming',
+        'content_creation', 'collaboration', 'gaming', 'virtual_dates'
+      ]
+    }],
+    // Communication style
+    communicationStyle: {
+      frequency: {
+        type: String,
+        enum: ['daily', 'weekly', 'monthly', 'occasional'],
+        default: 'weekly'
+      },
+      preferredTime: {
+        type: String,
+        enum: ['morning', 'afternoon', 'evening', 'night', 'anytime'],
+        default: 'anytime'
+      },
+      formality: {
+        type: String,
+        enum: ['casual', 'professional', 'mixed'],
+        default: 'casual'
+      }
+    },
+    // Content creation preferences
+    creatorPreferences: {
+      contentTypes: [{
+        type: String,
+        enum: ['photos', 'videos', 'live_streams', 'audio', 'text', 'artwork']
+      }],
+      collaborationInterest: { type: Boolean, default: false },
+      mentoringInterest: { type: Boolean, default: false },
+      learningInterest: { type: Boolean, default: false }
+    }
+  },
+  // AI Matching Data
+  aiProfile: {
+    // Computed compatibility scores with other users
+    compatibilityScores: [{
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      score: { type: Number, min: 0, max: 100 },
+      factors: {
+        interests: { type: Number, min: 0, max: 100 },
+        personality: { type: Number, min: 0, max: 100 },
+        location: { type: Number, min: 0, max: 100 },
+        activity: { type: Number, min: 0, max: 100 }
+      },
+      lastUpdated: { type: Date, default: Date.now }
+    }],
+    // User behavior patterns
+    behaviorPatterns: {
+      activeHours: [Number], // 0-23 representing hours of day
+      preferredContentTypes: [String],
+      interactionFrequency: { type: Number, default: 0 },
+      responseTime: { type: Number, default: 0 }, // average response time in minutes
+      engagementScore: { type: Number, min: 0, max: 100, default: 50 }
+    },
+    // Learning data for AI
+    learningData: {
+      successfulMatches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+      failedMatches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+      userFeedback: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        rating: { type: Number, min: 1, max: 5 },
+        feedback: String,
+        timestamp: { type: Date, default: Date.now }
+      }],
+      preferencesUpdated: { type: Date, default: Date.now }
+    }
   }
 }, {
   timestamps: true

@@ -87,6 +87,9 @@ const verificationRoutes = require('./routes/verification');
 const uploadRoutes = require('./routes/upload');
 const queueRoutes = require('./routes/queue');
 const profileRoutes = require('./routes/profile');
+const matchingRoutes = require('./routes/matching');
+const postRoutes = require('./routes/posts');
+const commentRoutes = require('./routes/comments');
 
 // Simple test endpoint to verify deployment
 app.get('/api/deployment-test', (req, res) => {
@@ -191,6 +194,9 @@ app.use('/api/verification', verificationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/queue', queueRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/matching', matchingRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Stripe webhook endpoint (must be before other routes)
 app.post('/api/webhooks/stripe', express.raw({type: 'application/json'}), async (req, res) => {

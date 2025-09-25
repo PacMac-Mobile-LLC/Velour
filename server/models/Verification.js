@@ -10,8 +10,7 @@ const verificationSchema = new mongoose.Schema({
   diditId: {
     type: String,
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
   status: {
     type: String,

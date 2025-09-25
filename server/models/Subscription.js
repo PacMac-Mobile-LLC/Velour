@@ -93,10 +93,10 @@ const subscriptionSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
-subscriptionSchema.index({ subscriber: 1, creator: 1 });
-subscriptionSchema.index({ creator: 1, status: 1 });
-subscriptionSchema.index({ stripeSubscriptionId: 1 });
+// Index for efficient queries (Mongoose will handle these automatically)
+// subscriptionSchema.index({ subscriber: 1, creator: 1 });
+// subscriptionSchema.index({ creator: 1, status: 1 });
+// subscriptionSchema.index({ stripeSubscriptionId: 1 });
 
 // Virtual for subscription status
 subscriptionSchema.virtual('isValid').get(function() {
