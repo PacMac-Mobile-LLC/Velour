@@ -29,7 +29,7 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://vibecodes.space
+        value: https://www.vibecodes.space
 
   - type: web
     name: velour-frontend
@@ -40,7 +40,7 @@ services:
       - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
         sync: false
       - key: REACT_APP_API_URL
-        value: https://videochat-wv3g.onrender.com/api
+        value: https://velour-cbft.onrender.com/api
 
 databases:
   - name: velour-db
