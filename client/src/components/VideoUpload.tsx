@@ -191,3 +191,5 @@ export function VideoUpload({ isOpen, onClose }: VideoUploadProps) {
     </div>
   );
 }
+
+export default VideoUpload;

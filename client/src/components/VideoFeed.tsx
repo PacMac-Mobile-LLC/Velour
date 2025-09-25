@@ -153,3 +153,5 @@ export function VideoFeed() {
     </div>
   );
 }
+
+export default VideoFeed;

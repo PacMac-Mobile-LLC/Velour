@@ -170,3 +170,5 @@ export function ShareModal({
     </div>
   );
 }
+
+export default ShareModal;

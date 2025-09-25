@@ -227,3 +227,5 @@ export function CommentsModal({
     </div>
   );
 }
+
+export default CommentsModal;

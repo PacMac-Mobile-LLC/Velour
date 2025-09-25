@@ -183,3 +183,5 @@ export function VideoPlayer({
     </div>
   );
 }
+
+export default VideoPlayer;

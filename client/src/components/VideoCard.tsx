@@ -263,3 +263,5 @@ export function VideoCard({
     </div>
   );
 }
+
+export default VideoCard;
