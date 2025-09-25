@@ -90,6 +90,16 @@ const profileRoutes = require('./routes/profile');
 const matchingRoutes = require('./routes/matching');
 const postRoutes = require('./routes/posts');
 const commentRoutes = require('./routes/comments');
+const collectionRoutes = require('./routes/collections');
+const vaultRoutes = require('./routes/vault');
+const statementRoutes = require('./routes/statements');
+const analyticsRoutes = require('./routes/analytics');
+
+// Import models for dashboard stats
+const Post = require('./models/Post');
+const Subscription = require('./models/Subscription');
+const Statement = require('./models/Statement');
+const { authenticateToken } = require('./middleware/auth');
 
 // Simple test endpoint to verify deployment
 app.get('/api/deployment-test', (req, res) => {
@@ -197,6 +207,55 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/collections', collectionRoutes);
+app.use('/api/vault', vaultRoutes);
+app.use('/api/statements', statementRoutes);
+app.use('/api/analytics', analyticsRoutes);
+
+// Dashboard stats endpoint
+app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const [
+      totalPosts,
+      totalSubscribers,
+      totalEarnings,
+      recentActivity
+    ] = await Promise.all([
+      Post.countDocuments({ userId }),
+      Subscription.countDocuments({ creatorId: userId, status: 'active' }),
+      Statement.aggregate([
+        { $match: { userId: userId, type: 'earnings', status: 'completed' } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]),
+      Post.find({ userId }).sort({ createdAt: -1 }).limit(5)
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalPosts,
+        totalSubscribers,
+        totalEarnings: totalEarnings[0]?.total || 0,
+        recentActivity: recentActivity.map(post => ({
+          id: post._id,
+          title: post.title,
+          type: post.type,
+          likes: post.engagement?.likes || 0,
+          comments: post.engagement?.comments || 0,
+          createdAt: post.createdAt.toISOString().split('T')[0]
+        }))
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch dashboard stats'
+    });
+  }
+});
 
 // Stripe webhook endpoint (must be before other routes)
 app.post('/api/webhooks/stripe', express.raw({type: 'application/json'}), async (req, res) => {
