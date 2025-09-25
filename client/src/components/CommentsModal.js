@@ -3,35 +3,14 @@ import { X, Send, Heart } from 'lucide-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'react-hot-toast';
 
-interface Comment {
-  id: string;
-  content: string;
-  user: {
-    username: string;
-    display_name: string;
-    avatar_url?: string;
-  };
-  created_at: string;
-  likes: number;
-  isLiked?: boolean;
-}
-
-interface CommentsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  videoId: string;
-  commentCount: number;
-  onCommentCountUpdate: (count: number) => void;
-}
-
 export function CommentsModal({ 
   isOpen, 
   onClose, 
   videoId, 
   commentCount, 
   onCommentCountUpdate 
-}: CommentsModalProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
+}) {
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +39,7 @@ export function CommentsModal({
     }
   };
 
-  const handleSubmitComment = async (e: React.FormEvent) => {
+  const handleSubmitComment = async (e) => {
     e.preventDefault();
     
     if (!user || !newComment.trim()) {

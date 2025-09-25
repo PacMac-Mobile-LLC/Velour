@@ -1,32 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { VideoCard } from './VideoCard';
+import VideoCard from './VideoCard';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'react-hot-toast';
 
-interface Video {
-  id: string;
-  title: string;
-  description: string;
-  video_url: string;
-  thumbnail_url?: string;
-  user_id: string;
-  created_at: string;
-  user: {
-    username: string;
-    display_name: string;
-    avatar_url?: string;
-  };
-  likes: number;
-  comments: number;
-  shares: number;
-  isLiked?: boolean;
-  isBookmarked?: boolean;
-}
-
 export function VideoFeed() {
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const { user } = useAuth0();
 
   useEffect(() => {

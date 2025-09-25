@@ -3,20 +3,15 @@ import { Upload, X, Video } from 'lucide-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'react-hot-toast';
 
-interface VideoUploadProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export function VideoUpload({ isOpen, onClose }: VideoUploadProps) {
+export function VideoUpload({ isOpen, onClose }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef(null);
   const { user } = useAuth0();
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       // Check if it's a video file

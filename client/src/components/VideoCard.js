@@ -1,29 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Share, Bookmark, TrendingUp, MessageCircle } from 'lucide-react';
-import { VideoPlayer } from './VideoPlayer';
-import { CommentsModal } from './CommentsModal';
-import { ShareModal } from './ShareModal';
-
-interface VideoCardProps {
-  id: string;
-  videoSrc: string;
-  thumbnail?: string;
-  user: {
-    id: string;
-    username: string;
-    displayName: string;
-    avatar?: string;
-    verified?: boolean;
-  };
-  description: string;
-  likes: number;
-  comments: number;
-  shares: number;
-  isLiked?: boolean;
-  isBookmarked?: boolean;
-  algorithmScore?: number;
-  algorithmFactors?: string[];
-}
+import VideoPlayer from './VideoPlayer';
+import CommentsModal from './CommentsModal';
+import ShareModal from './ShareModal';
 
 export function VideoCard({
   id,
@@ -38,7 +17,7 @@ export function VideoCard({
   isBookmarked = false,
   algorithmScore = 0.85,
   algorithmFactors = ['Engagement rate', 'Recent activity', 'Similar interests']
-}: VideoCardProps) {
+}) {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [likes, setLikes] = useState(initialLikes);

@@ -1,15 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
 
-interface VideoPlayerProps {
-  src: string;
-  poster?: string;
-  autoPlay?: boolean;
-  muted?: boolean;
-  loop?: boolean;
-  videoId?: string;
-}
-
 export function VideoPlayer({ 
   src, 
   poster, 
@@ -17,8 +8,8 @@ export function VideoPlayer({
   muted = false, 
   loop = true,
   videoId
-}: VideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+}) {
+  const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
   const [showControls, setShowControls] = useState(false);

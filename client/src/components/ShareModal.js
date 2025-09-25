@@ -2,16 +2,6 @@ import React, { useState } from 'react';
 import { X, Copy, Share2, MessageCircle, Mail, Twitter, Facebook } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-interface ShareModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  videoId: string;
-  videoTitle: string;
-  videoUrl: string;
-  shareCount: number;
-  onShareCountUpdate: (count: number) => void;
-}
-
 export function ShareModal({ 
   isOpen, 
   onClose, 
@@ -20,7 +10,7 @@ export function ShareModal({
   videoUrl, 
   shareCount, 
   onShareCountUpdate 
-}: ShareModalProps) {
+}) {
   const [copied, setCopied] = useState(false);
 
   const shareUrl = `${window.location.origin}/video/${videoId}`;
