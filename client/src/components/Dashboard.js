@@ -51,6 +51,8 @@ import QueueTab from './QueueTab';
 import StatementsTab from './StatementsTab';
 import StatisticsTab from './StatisticsTab';
 import ProfileTab from './ProfileTab';
+import DiscoverUsersTab from './DiscoverUsersTab';
+import SocialFeed from './SocialFeed';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -646,6 +648,7 @@ const Dashboard = () => {
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home, badge: null },
+    { id: 'discover', label: 'Discover', icon: Users, badge: null },
     { id: 'notifications', label: 'Notifications', icon: Bell, badge: notifications.filter(n => !n.read).length || null },
     { id: 'messages', label: 'Messages', icon: MessageCircle, badge: conversations.filter(c => c.unreadCount > 0).length || null },
     { id: 'collections', label: 'Collections', icon: Star, badge: null },
@@ -660,171 +663,10 @@ const Dashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
-        return (
-          <div>
-            <StatsGrid>
-              <StatCard>
-                <StatHeader>
-                  <StatTitle>Active Subscriptions</StatTitle>
-                  <StatIcon><Heart size={20} /></StatIcon>
-                </StatHeader>
-                <StatValue>{analytics.activeSubscriptions || subscriptions.length}</StatValue>
-                <StatChange positive={analytics.subscriptionGrowth >= 0}>
-                  <TrendingUp size={12} />
-                  {analytics.subscriptionGrowth >= 0 ? '+' : ''}{analytics.subscriptionGrowth || 0}% this month
-                </StatChange>
-              </StatCard>
-              
-              <StatCard>
-                <StatHeader>
-                  <StatTitle>Total Views</StatTitle>
-                  <StatIcon><Eye size={20} /></StatIcon>
-                </StatHeader>
-                <StatValue>{analytics.totalViews || 0}</StatValue>
-                <StatChange positive={analytics.viewGrowth >= 0}>
-                  <TrendingUp size={12} />
-                  {analytics.viewGrowth >= 0 ? '+' : ''}{analytics.viewGrowth || 0}% this week
-                </StatChange>
-              </StatCard>
-              
-              <StatCard>
-                <StatHeader>
-                  <StatTitle>Messages Sent</StatTitle>
-                  <StatIcon><MessageCircle size={20} /></StatIcon>
-                </StatHeader>
-                <StatValue>{analytics.messagesSent || 0}</StatValue>
-                <StatChange positive={analytics.messageGrowth >= 0}>
-                  <TrendingUp size={12} />
-                  {analytics.messageGrowth >= 0 ? '+' : ''}{analytics.messageGrowth || 0}% today
-                </StatChange>
-              </StatCard>
-              
-              <StatCard>
-                <StatHeader>
-                  <StatTitle>Monthly Revenue</StatTitle>
-                  <StatIcon><DollarSign size={20} /></StatIcon>
-                </StatHeader>
-                <StatValue>${analytics.monthlyRevenue || 0}</StatValue>
-                <StatChange positive={analytics.revenueGrowth >= 0}>
-                  <TrendingUp size={12} />
-                  {analytics.revenueGrowth >= 0 ? '+' : ''}{analytics.revenueGrowth || 0}% this month
-                </StatChange>
-              </StatCard>
-            </StatsGrid>
-
-            <QuickActions>
-              <QuickActionsTitle>
-                <Plus size={20} />
-                Quick Actions
-              </QuickActionsTitle>
-              <ActionsGrid>
-                <ActionCard onClick={() => setActiveTab('vault')}>
-                  <ActionIcon><Camera size={20} /></ActionIcon>
-                  <ActionTitle>Upload Content</ActionTitle>
-                  <ActionDescription>Add photos, videos, or live streams to your vault</ActionDescription>
-                </ActionCard>
-                
-                <ActionCard onClick={() => setActiveTab('queue')}>
-                  <ActionIcon><Calendar size={20} /></ActionIcon>
-                  <ActionTitle>Schedule Live</ActionTitle>
-                  <ActionDescription>Plan your next live streaming session</ActionDescription>
-                </ActionCard>
-                
-                <ActionCard onClick={() => setActiveTab('messages')}>
-                  <ActionIcon><MessageCircle size={20} /></ActionIcon>
-                  <ActionTitle>Send Message</ActionTitle>
-                  <ActionDescription>Connect with your subscribers</ActionDescription>
-                </ActionCard>
-                
-                <ActionCard onClick={() => setActiveTab('statistics')}>
-                  <ActionIcon><TrendingUp size={20} /></ActionIcon>
-                  <ActionTitle>View Analytics</ActionTitle>
-                  <ActionDescription>Check your performance metrics</ActionDescription>
-                </ActionCard>
-              </ActionsGrid>
-            </QuickActions>
-
-            <ContentSection>
-              <SectionTitle>
-                <Users size={20} />
-                Recent Activity
-              </SectionTitle>
-              <SectionContent>
-                <p>Welcome back, {profile.displayName || user?.name || 'Creator'}! Here's what's happening with your content:</p>
-                {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
-                  <ul style={{ marginTop: '15px', paddingLeft: '20px' }}>
-                    {analytics.recentActivity.map((activity, index) => (
-                      <li key={index}>{activity.description}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div style={{ marginTop: '20px', textAlign: 'center', padding: '20px', color: '#888' }}>
-                    <Info size={24} style={{ marginBottom: '10px', opacity: 0.5 }} />
-                    <p>No recent activity to display</p>
-                    <p style={{ fontSize: '0.9rem' }}>Start creating content to see your activity here!</p>
-                  </div>
-                )}
-              </SectionContent>
-            </ContentSection>
-
-            {recommendedCreators.length > 0 && (
-              <ContentSection>
-                <SectionTitle>
-                  <Star size={20} />
-                  Recommended Creators
-                </SectionTitle>
-                <SectionContent>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '20px' }}>
-                    {recommendedCreators.slice(0, 4).map((creator) => (
-                      <div key={creator.id} style={{ 
-                        background: 'rgba(42, 42, 42, 0.6)', 
-                        border: '1px solid #444', 
-                        borderRadius: '10px', 
-                        padding: '15px',
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <div style={{ 
-                          width: '50px', 
-                          height: '50px', 
-                          borderRadius: '50%', 
-                          background: 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
-                          margin: '0 auto 10px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }}>
-                          {creator.displayName?.charAt(0) || 'C'}
-                        </div>
-                        <div style={{ color: 'white', fontWeight: '600', marginBottom: '5px' }}>
-                          {creator.displayName}
-                        </div>
-                        <div style={{ color: '#ccc', fontSize: '0.8rem', marginBottom: '10px' }}>
-                          @{creator.username}
-                        </div>
-                        <div style={{ 
-                          background: 'linear-gradient(135deg, #ff69b4 0%, #7a288a 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '5px',
-                          padding: '8px 16px',
-                          fontSize: '0.8rem',
-                          fontWeight: '600',
-                          cursor: 'pointer'
-                        }}>
-                          Subscribe
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </SectionContent>
-              </ContentSection>
-            )}
-          </div>
-        );
+        return <SocialFeed user={user} />;
+      
+      case 'discover':
+        return <DiscoverUsersTab />;
       
       case 'notifications':
         return <NotificationsTab />;
