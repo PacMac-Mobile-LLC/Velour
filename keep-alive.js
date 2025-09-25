@@ -1,38 +1,41 @@
 #!/usr/bin/env node
 
 /**
- * Keep Alive Script for Velour Platform
- * Pings the service every 5 minutes to prevent Render from spinning down
+ * Keep-Alive Service for Render Backend
+ * Pings the server every 5 minutes to prevent 15-minute timeout
  */
 
 const https = require('https');
 const http = require('http');
 
 // Configuration
-const SERVICE_URL = process.env.SERVICE_URL || 'https://videochat-wv3g.onrender.com';
 const PING_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
+const BACKEND_URL = process.env.BACKEND_URL || 'https://videochat-wv3g.onrender.com';
 const PING_ENDPOINT = '/api/ping';
 
 // Colors for console output
 const colors = {
-  green: '\x1b[32m',
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
   red: '\x1b[31m',
+  green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m'
 };
 
 function log(message, color = 'reset') {
   const timestamp = new Date().toISOString();
-  console.log(`${colors[color]}[${timestamp}] ${message}${colors.reset}`);
+  console.log(`${colors[color]}${colors.bright}[${timestamp}]${colors.reset} ${colors[color]}${message}${colors.reset}`);
 }
 
-function pingService() {
-  const url = `${SERVICE_URL}${PING_ENDPOINT}`;
+function pingServer() {
+  const url = `${BACKEND_URL}${PING_ENDPOINT}`;
   const isHttps = url.startsWith('https://');
   const client = isHttps ? https : http;
   
-  log(`🏓 Pinging ${url}`, 'blue');
+  log(`🔄 Pinging server: ${url}`, 'blue');
   
   const req = client.get(url, (res) => {
     let data = '';
@@ -45,8 +48,8 @@ function pingService() {
       if (res.statusCode === 200) {
         try {
           const response = JSON.parse(data);
-          log(`✅ Ping successful - ${response.message}`, 'green');
-          log(`   Uptime: ${Math.floor(response.uptime / 60)} minutes`, 'green');
+          log(`✅ Ping successful! Server responded: ${response.message}`, 'green');
+          log(`   Uptime: ${Math.round(response.uptime)}s`, 'cyan');
         } catch (error) {
           log(`⚠️  Ping successful but invalid JSON response`, 'yellow');
         }
@@ -57,40 +60,43 @@ function pingService() {
   });
   
   req.on('error', (error) => {
-    log(`❌ Ping failed: ${error.message}`, 'red');
+    log(`❌ Ping failed with error: ${error.message}`, 'red');
   });
   
-  req.setTimeout(10000, () => {
-    log(`❌ Ping timeout after 10 seconds`, 'red');
+  req.setTimeout(30000, () => {
+    log(`⏰ Ping timeout after 30 seconds`, 'yellow');
     req.destroy();
   });
 }
 
 function startKeepAlive() {
-  log(`🚀 Starting Keep Alive service for Velour Platform`, 'green');
-  log(`📍 Service URL: ${SERVICE_URL}`, 'blue');
-  log(`⏰ Ping interval: ${PING_INTERVAL / 1000 / 60} minutes`, 'blue');
-  log(`🔗 Ping endpoint: ${PING_ENDPOINT}`, 'blue');
+  log(`🚀 Starting Keep-Alive service for Velour backend`, 'magenta');
+  log(`📍 Backend URL: ${BACKEND_URL}`, 'cyan');
+  log(`⏱️  Ping interval: ${PING_INTERVAL / 1000 / 60} minutes`, 'cyan');
+  log(`🎯 Ping endpoint: ${PING_ENDPOINT}`, 'cyan');
   
   // Initial ping
-  pingService();
+  pingServer();
   
   // Set up interval
-  setInterval(pingService, PING_INTERVAL);
+  const interval = setInterval(pingServer, PING_INTERVAL);
   
-  log(`✅ Keep Alive service started successfully`, 'green');
+  // Graceful shutdown
+  process.on('SIGINT', () => {
+    log(`\n🛑 Shutting down Keep-Alive service...`, 'yellow');
+    clearInterval(interval);
+    process.exit(0);
+  });
+  
+  process.on('SIGTERM', () => {
+    log(`\n🛑 Shutting down Keep-Alive service...`, 'yellow');
+    clearInterval(interval);
+    process.exit(0);
+  });
+  
+  log(`✅ Keep-Alive service started successfully!`, 'green');
+  log(`💡 Press Ctrl+C to stop the service`, 'yellow');
 }
-
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  log(`🛑 Keep Alive service stopped`, 'yellow');
-  process.exit(0);
-});
-
-process.on('SIGTERM', () => {
-  log(`🛑 Keep Alive service terminated`, 'yellow');
-  process.exit(0);
-});
 
 // Start the service
 startKeepAlive();
