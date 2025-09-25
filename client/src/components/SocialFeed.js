@@ -10,9 +10,9 @@ import {
   Smile,
   Frown,
   Angry,
-  Wow,
-  Fire,
-  HeartEyes,
+  Star,
+  Flame,
+  Sparkles,
   Eye,
   Play,
   Pause,
@@ -404,11 +404,11 @@ const SocialFeed = ({ user }) => {
     { id: 'like', icon: ThumbsUp, color: '#1da1f2' },
     { id: 'love', icon: Heart, color: '#e91e63' },
     { id: 'laugh', icon: Smile, color: '#ff9800' },
-    { id: 'wow', icon: Wow, color: '#ff5722' },
+    { id: 'wow', icon: Star, color: '#ff5722' },
     { id: 'sad', icon: Frown, color: '#2196f3' },
     { id: 'angry', icon: Angry, color: '#f44336' },
-    { id: 'fire', icon: Fire, color: '#ff6b35' },
-    { id: 'heart_eyes', icon: HeartEyes, color: '#e91e63' }
+    { id: 'fire', icon: Flame, color: '#ff6b35' },
+    { id: 'heart_eyes', icon: Sparkles, color: '#e91e63' }
   ];
 
   const fetchPosts = useCallback(async (pageNum = 1, reset = false) => {
