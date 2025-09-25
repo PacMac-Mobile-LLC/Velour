@@ -74,6 +74,9 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Store active rooms
 const rooms = new Map();
 
@@ -90,6 +93,7 @@ const profileRoutes = require('./routes/profile');
 const matchingRoutes = require('./routes/matching');
 const postRoutes = require('./routes/posts');
 const commentRoutes = require('./routes/comments');
+const videoRoutes = require('./routes/videos');
 const collectionRoutes = require('./routes/collections');
 const vaultRoutes = require('./routes/vault');
 const statementRoutes = require('./routes/statements');
@@ -98,6 +102,7 @@ const analyticsRoutes = require('./routes/analytics');
 // Import models for dashboard stats
 const Post = require('./models/Post');
 const Subscription = require('./models/Subscription');
+const Video = require('./models/Video');
 const Statement = require('./models/Statement');
 const { authenticateToken } = require('./middleware/auth');
 
@@ -207,6 +212,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/videos', videoRoutes);
 app.use('/api/collections', collectionRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/statements', statementRoutes);

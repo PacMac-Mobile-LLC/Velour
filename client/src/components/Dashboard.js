@@ -53,6 +53,8 @@ import StatisticsTab from './StatisticsTab';
 import ProfileTab from './ProfileTab';
 import DiscoverUsersTab from './DiscoverUsersTab';
 import SocialFeed from './SocialFeed';
+import VideoFeed from './VideoFeed';
+import VideoUpload from './VideoUpload';
 
 // Main Dashboard Container
 const DashboardContainer = styled.div`
@@ -547,6 +549,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVideoUploadOpen, setIsVideoUploadOpen] = useState(false);
 
   // Handle mobile menu toggle
   const toggleMobileMenu = () => {
@@ -648,6 +651,7 @@ const Dashboard = () => {
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home, badge: null },
+    { id: 'videos', label: 'Videos', icon: Video, badge: null },
     { id: 'discover', label: 'Discover', icon: Users, badge: null },
     { id: 'notifications', label: 'Notifications', icon: Bell, badge: notifications.filter(n => !n.read).length || null },
     { id: 'messages', label: 'Messages', icon: MessageCircle, badge: conversations.filter(c => c.unreadCount > 0).length || null },
@@ -664,6 +668,9 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'home':
         return <SocialFeed user={user} />;
+      
+      case 'videos':
+        return <VideoFeed />;
       
       case 'discover':
         return <DiscoverUsersTab />;
@@ -876,6 +883,13 @@ const Dashboard = () => {
               <SearchInput placeholder="Search..." />
             </SearchBar>
             
+            {activeTab === 'videos' && (
+              <ActionButton onClick={() => setIsVideoUploadOpen(true)}>
+                <Plus size={16} />
+                Upload Video
+              </ActionButton>
+            )}
+            
             <ActionButton onClick={() => handleTabChange('profile')}>
               <Settings size={16} />
               Settings
@@ -887,6 +901,12 @@ const Dashboard = () => {
           {renderContent()}
         </ContentArea>
       </MainContent>
+      
+      {/* Video Upload Modal */}
+      <VideoUpload 
+        isOpen={isVideoUploadOpen} 
+        onClose={() => setIsVideoUploadOpen(false)} 
+      />
     </DashboardContainer>
   );
 };
