@@ -2,9 +2,6 @@
 # This file tells the server to serve index.html for all routes
 # so React Router can handle the routing
 
-# Redirect non-www to www for consistency
-https://vibecodes.space/* https://www.vibecodes.space/:splat 301!
-
 # Redirect all routes to index.html with 200 status
 /*    /index.html   200
 
